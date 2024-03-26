@@ -105,7 +105,7 @@ const ChartjsLineChart = ({ labelColor, gridLineColor, lineChartDanger, stepper 
             <span className='align-middle d-sm-inline-block d-none'>Cấu hình lại</span>
           </Button>
           <Button type='button' color='primary' className='btn-next' onClick={() => stepper.next()}>
-            <span className='align-middle d-sm-inline-block d-none'>Kiểm thử</span>
+            <span className='align-middle d-sm-inline-block d-none'>Đánh giá</span>
             <ArrowRight size={14} className='align-middle ms-sm-25 ms-0'></ArrowRight>
           </Button>
         </div>

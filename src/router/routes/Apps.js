@@ -1,6 +1,7 @@
 // ** React Imports
 import { lazy } from 'react'
 import { Navigate } from 'react-router-dom'
+import Detect from '../../views/apps/detect'
 
 const Chat = lazy(() => import('../../views/apps/chat'))
 const Todo = lazy(() => import('../../views/apps/todo'))
@@ -177,6 +178,10 @@ const AppRoutes = [
     meta: {
       layout: 'blank'
     }
+  },
+   {
+    element: <Detect />,
+    path: '/apps/detect'
   },
   {
     element: <EcommerceShop />,

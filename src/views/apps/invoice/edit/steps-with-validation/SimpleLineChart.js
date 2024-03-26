@@ -217,7 +217,7 @@ const SimpleLineChart = ({ warning, stepper }) => {
               <AlertCircle size={14} className='align-middle ms-sm-25 ms-0'></AlertCircle>
             </Button>
             <Button type='submit' color='primary' className='btn-next' disabled={next}>
-              <span className='align-middle d-sm-inline-block d-none'>Kiểm thử</span>
+              <span className='align-middle d-sm-inline-block d-none'>Đánh giá</span>
               <ArrowRight size={14} className='align-middle ms-sm-25 ms-0'></ArrowRight>
             </Button>
           </div>

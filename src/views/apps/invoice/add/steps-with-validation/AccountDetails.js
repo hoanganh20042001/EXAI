@@ -47,25 +47,41 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
   const dataDataset = useSelector((state) => {
     return state.dataset.dataDataset
   })
+  // const ChangeLisData = (dataDataset) => {
+  //   const list = []
+  //   dataDataset.map(item => {
+  //     list.push({
+  //       value: JSON.stringify({
+  //         id: item.datasetid,
+  //         datasetdescription: item.datasetdescription,
+  //         datasetfolderurl: item.datasetfolderurl,
+  //         datasetname: item.datasetname,
+  //         datasetowner: item.datasetowner,
+  //         datasetsoftID: item.datasetsoftID,
+  //         datasetsum: item.datasetsum,
+  //         datasettype: item.datasettype,
+  //       }),
+  //       label: item.datasetname
+  //     })
+  //   })
+  //   return list
+  // }
   const ChangeLisData = (dataDataset) => {
-    const list = []
-    dataDataset.map(item => {
-      list.push({
-        value: JSON.stringify({
-          id: item.datasetid,
-          datasetdescription: item.datasetdescription,
-          datasetfolderurl: item.datasetfolderurl,
-          datasetname: item.datasetname,
-          datasetowner: item.datasetowner,
-          datasetsoftID: item.datasetsoftID,
-          datasetsum: item.datasetsum,
-          datasettype: item.datasettype,
-        }),
-        label: item.datasetname
-      })
-    })
-    return list
+    return dataDataset.map(item => ({
+      value: JSON.stringify({
+        id: item.datasetid,
+        datasetdescription: item.datasetdescription,
+        datasetfolderurl: item.datasetfolderurl,
+        datasetname: item.datasetname,
+        datasetowner: item.datasetowner,
+        datasetsoftID: item.datasetsoftID,
+        datasetsum: item.datasetsum,
+        datasettype: item.datasettype,
+      }),
+      label: item.datasetname
+    }))
   }
+  
   useEffect(() => {
     dispatch(getListDataBySoftID({
       pageSize: 10,

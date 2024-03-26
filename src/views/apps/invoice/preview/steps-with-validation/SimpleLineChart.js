@@ -266,7 +266,7 @@ const SimpleLineChart = ({ warning, stepper, infoExp, info }) => {
               <Save size={14} className='align-middle ms-sm-25 ms-0'></Save>
             </Button>
             <Button type='submit' color='primary' className='btn-next' disabled={disable}>
-              <span className='align-middle d-sm-inline-block d-none'>Kiểm thử</span>
+              <span className='align-middle d-sm-inline-block d-none'>Đánh giá</span>
               <ArrowRight size={14} className='align-middle ms-sm-25 ms-0'></ArrowRight>
             </Button>
           </div>

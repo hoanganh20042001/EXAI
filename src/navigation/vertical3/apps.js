@@ -18,7 +18,7 @@ export default [
   {
     id: 'dataModel',
     title: 'Mô hình',
-    icon: <Users size={20} />,
+    icon: <Circle size={12} />,
     navLink: '/apps/model'
   },
   {
@@ -26,6 +26,13 @@ export default [
     title: 'Thư viện',
     icon: <Users size={20} />,
     navLink: '/apps/libs'
+  },
+  {
+    id: 'detectUrl',
+    title: 'Detect Url',
+    icon:  <CheckSquare size={20} />,
+    navLink: '/apps/detect',
+    
   },
   {
     id: 'phisingUrl',
@@ -48,7 +55,7 @@ export default [
   // },
   // {
   //   id: 'todo',
-  //   title: 'Todo',
+  //   title: 'Detect',
   //   icon: <CheckSquare size={20} />,
   //   navLink: '/apps/todo'
   // },

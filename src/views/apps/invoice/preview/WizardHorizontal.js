@@ -59,8 +59,8 @@ const WizardHorizontal = ({ exp }) => {
     },
     {
       id: 'step-test',
-      title: 'Chọn bộ dữ liệu test',
-      subtitle: 'Chọn bộ dữ liệu để kiểm thử',
+      title: 'Đánh giá',
+      subtitle: 'Đánh giá mô hình',
       content: <StepTest stepper={stepper} infoExp={exp} info={infoExp} changeInfo={handleChangeInfo} />
     },
     {
