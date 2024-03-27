@@ -17,6 +17,7 @@ import { useSelector, useDispatch } from 'react-redux'
 // import { toDateString } from '@utils'
 // import { getListFace, searchFace, updateFace, addFace, deleteFace } from '@store/action/face'
 import StatsHorizontal from '@components/widgets/stats/StatsHorizontal'
+import './detect.css'
 
 // ** Reactstrap Imports
 import {
@@ -228,10 +229,9 @@ const ManageDetect = () => {
   return (
     <Fragment>
       <Card>
-        <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom' >
+        <CardHeader className='card_detect flex-md-row flex-column align-md-items-center align-items-start border-bottom' >
           {/* <CardTitle tag='h4' style={{ fontWeight: 'bold', color: '#1203b1' }}>Tìm kiếm</CardTitle> */}
-          <Row className='gy-1'style={{height:'10px'}}>
-          <StatsHorizontal  icon={<UncontrolledDropdown>
+          <StatsHorizontal icon={<UncontrolledDropdown>
             <DropdownToggle tag='span'>
               <MoreVertical size={17} className='cursor-pointer' />
             </DropdownToggle>
@@ -260,13 +260,12 @@ const ManageDetect = () => {
               </DropdownItem>
             </DropdownMenu>
           </UncontrolledDropdown>} color='primary' />
-          </Row>
           <div className='d-flex mt-md-0 mt-1'>
-            <Button className='ms-2' color='primary' onClick={() => handleFilter()}><Search size={15} /> <span className='align-middle ms-50'>Tìm kiếm</span> </Button> : <></>
+            <Button className='ms-2' color='primary' onClick={() => handleFilter()}><Search size={15} /> <span className='align-middle ms-50'>Tìm kiếm</span> </Button> 
           </div>
         </CardHeader>
-        <Row className='justify-content-end mx-0'>
-          <Col className='d-flex align-items-center justify-content-end mt-1' md='6' sm='12'>
+        <Row className=' mx-0'>
+          <Col className='mb-1' md='5' sm='12'>
             <Label className='me-1' for='search-input'>
               Nhập link tìm kiếm
             </Label>
@@ -279,14 +278,14 @@ const ManageDetect = () => {
               onChange={e => setSearchValue(e.target.value)}
             />
           </Col>
-          <Col className='d-flex align-items-center justify-content-end mt-1' md='6' sm='12'>
+          <Col className='mb-1' md='2' sm='12'>
             <Label className='me-1' for='search-input'>
-              Độ chính xác
+            Câu hình
             </Label>
             <Select
               isMulti={false}
               isClearable={false}
-              placeholder={'Độ chính xác'}
+              placeholder={''}
               theme={selectThemeColors}
               id={`language`}
               options={languageOptions}
@@ -294,6 +293,74 @@ const ManageDetect = () => {
               classNamePrefix='select'
               isDisabled={displaySelect}
             // onChange={(e) => handleOnChange(e.value, "expsoftwarelibid")}
+            />
+          </Col>
+          <Col md='2' className='mb-1'>
+            <Label className='form-label' for='city'>
+              Chọn bộ dữ liệu
+            </Label>
+            <Select
+              isMulti={false}
+              isClearable={false}
+              theme={selectThemeColors}
+              placeholder={''}
+              id={`language`}
+              options={languageOptions}
+              className='react-select'
+              classNamePrefix='select'
+              isDisabled={displaySelect}
+              // onChange={(e) => handleOnChangeData(e.value, "expdatasetid")}
+            />
+          </Col>
+          <Col md='1' className='mb-1'>
+            <Label className='form-label' for='city'>
+            Bạo lực
+            </Label>
+            <Select
+              isMulti={false}
+              isClearable={false}
+              theme={selectThemeColors}
+              placeholder={''}
+              id={`language`}
+              options={[{ value: 1, label: 'true' }, { value: 0, label: 'false' }]}
+              className='react-select'
+              classNamePrefix='select'
+              isDisabled={displaySelect}
+              // onChange={(e) => handleOnChangeData(e.value, "expdatasetid")}
+            />
+          </Col>  
+            <Col md='1' className='mb-1'>
+            <Label className='form-label' for='city'>
+            Vũ khí
+            </Label>
+            <Select
+              isMulti={false}
+              isClearable={false}
+              theme={selectThemeColors}
+              placeholder={''}
+              id={`language`}
+              options={[{ value: 1, label: 'true' }, { value: 0, label: 'false' }]}
+              className='react-select'
+              classNamePrefix='select'
+              isDisabled={displaySelect}
+              // onChange={(e) => handleOnChangeData(e.value, "expdatasetid")}
+            />
+          </Col>  
+            <Col md='1' className='mb-1'>
+            <Label className='form-label' for='city'>
+            Sự cố
+            </Label>
+            <Select
+              isMulti={false}
+              isClearable={false}
+              theme={selectThemeColors}
+              placeholder={''}
+              id={`language`}
+              options={[{ value: 1, label: 'true' }, { value: 0, label: 'false' }]}
+              className='react-select'
+              classNamePrefix='select'
+              isDisabled={displaySelect}
+              // onChange={(e) => handleOnChangeData(e.value, "expdatasetid")}
             />
           </Col>
         </Row>

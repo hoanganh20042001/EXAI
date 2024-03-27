@@ -178,11 +178,11 @@ const SimpleLineChart = ({ warning, stepper, infoExp, info }) => {
       const interval = setInterval(() => {
         setCounter((prevCounter) => prevCounter + 1)
         const url = process.env.REACT_APP_API_URL
-        axios.get(`${url}/experiment/get-new-traning-result/?id_paramsconfigs=${info.configid}&pre_result_index=0`
+        axios.get(`${url}/experiment/get-all-traning-result/?id_paramsconfigs=${info.configid}`
           , {
             headers: {
               'Content-Type': 'application/json',
-              // Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+              Authorization: `Bearer ${localStorage.getItem("accessToken")}`
             },
 
           }).then(response => {

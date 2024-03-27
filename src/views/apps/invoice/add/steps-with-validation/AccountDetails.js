@@ -67,6 +67,7 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
   //   return list
   // }
   const ChangeLisData = (dataDataset) => {
+    console.log(dataDataset)
     return dataDataset.map(item => ({
       value: JSON.stringify({
         id: item.datasetid,
