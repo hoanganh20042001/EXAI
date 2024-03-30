@@ -137,6 +137,7 @@ const SimpleLineChart = ({ warning, stepper, infoExp, info }) => {
     // if (Object.values(data).every(field => field.length > 0)) {
     stepper.next()
   }
+  const [id_paramsconfigs, setId_paramsconfigs] = useState()
   const [statusTrain, setSatus] = useState('training')
   const [disable, setDisable] = useState(true)
   const [listTrain, setListTrain] = useState([])
@@ -178,40 +179,50 @@ const SimpleLineChart = ({ warning, stepper, infoExp, info }) => {
       const interval = setInterval(() => {
         setCounter((prevCounter) => prevCounter + 1)
         const url = process.env.REACT_APP_API_URL
-        axios.get(`${url}/experiment/get-all-traning-result/?id_paramsconfigs=${info.configid}`
-          , {
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${localStorage.getItem("accessToken")}`
-            },
+        console.log(infoExp)
+        axios.get(`${url}/experiment/list-paramsconfigs/?id_exp=${infoExp.expid}`).then(response => {
+  
+          setId_paramsconfigs(response.data[0].configid)
+          if (response.data && response.data.length > 0) {
+            const id_paramsconfigs = response.data[0].configid
 
-          }).then(response => {
-            const list = listTrain
-            const data = response.data.data.result
-            const obj = {
-              time: moment(new Date()).format('HH:mm:ss'),
-              accuracy: response.data.accuracy,
-              lossvalue: response.data.lossvalue
-            }
-            if (response.data.data.status === '0') {
-              setSatus('done')
-            }
-            data.map(item => {
-              setPreTrain(train)
-              setTrain(item)
-              list.push({
-                accuracy: item.accuracy,
-                lossvalue: item.lossvalue,
-                epoch: item.trainresultindex
+          // console.log(localStorage.getItem("accessToken")})
+          axios.get(`${url}/experiment/get-all-traning-results/?id_paramsconfigs=${id_paramsconfigs}`
+            , {
+              headers: {
+                'Content-Type': 'application/json',
+                // Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+              },
+
+            }).then(response => {
+              const list = listTrain
+              const data = response.data
+              // console.log(response.data)
+              // const obj = {
+              //   time: moment(new Date()).format('HH:mm:ss'),
+              //   accuracy: response.data.accuracy,
+              //   lossvalue: response.data.lossvalue
+              // }
+              // if (response.data.data.status === '0') {
+              //   setSatus('done')
+              // }
+              data.map(item => {
+                setPreTrain(train)
+                setTrain(item)
+                list.push({
+                  accuracy: item.accuracy,
+                  lossvalue: item.lossvalue,
+                  epoch: item.trainresultindex
+                })
               })
+
+              setListTrain(list)
+              setDisable(false)
+
             })
-
-            setListTrain(list)
-            setDisable(false)
-
-          })
-
-      }, 1000)
+          }
+        }, 1000)
+      })
       return () => clearInterval(interval)
     } else if (statusTrain === 'training') {
       setDisable(true)

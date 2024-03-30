@@ -19,6 +19,19 @@ const getListExp = (data) => {
     })
   }
 }
+
+const getTrainning = (data) => {
+  const url = process.env.REACT_APP_API_URL
+  return async dispatch => {
+    await axios.get(`${url}/experiment/get-all-traning-results/?id_paramsconfigs=${data.id_paramsconfigs}`).then(response => {
+      dispatch({
+        type: 'GET_TRAINNING',
+        data: response.data
+      })
+    })
+  }
+}
+
 const searchListExp = (data) => {
   const url = process.env.REACT_APP_API_URL
   return async dispatch => {
@@ -217,5 +230,6 @@ export {
   updateExp,
   deleteExp,
   addExp,
-  searchListExp
+  searchListExp,
+  getTrainning
 }

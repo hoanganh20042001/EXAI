@@ -213,7 +213,7 @@ const Predict = ({ stepper, infoExp }) => {
               </p>
             </div>
           </div>
-          {files.length ? (
+          {/* {files.length ? (
             <Fragment>
               <ListGroup className='my-2'>{fileList}</ListGroup>
               {
@@ -235,7 +235,7 @@ const Predict = ({ stepper, infoExp }) => {
                 </Form>
               </div>
             </Fragment>
-          ) : null}
+          ) : null} */}
           <div className='d-flex justify-content-between' style={{ marginTop: '20px' }}>
             <Button type='button' color='primary' className='btn-prev' onClick={() => stepper.previous()}>
               <ArrowLeft size={14} className='align-middle me-sm-25 me-0'></ArrowLeft>

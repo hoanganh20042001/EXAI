@@ -91,26 +91,41 @@ const PersonalInfo = ({ stepper, infoExp, changeInfo }) => {
     changeInfo(infoModel.default_json_Paramsconfigs, 'paramsconfigs_json')
   }
   useEffect(() => {
-    dispatch(getListModelBySoftID({
-      pageSize: 10,
-      page: 1,
-      id_softlib: infoExp.expsoftwarelibid
-    }))
-
+    const fetchData = async () => {
+      try {
+        await dispatch(getListModelBySoftID({
+          pageSize: 10,
+          page: 1,
+          id_softlib: infoExp.expsoftwarelibid
+        }))
+      } catch (error) {
+        console.error("Error fetching data:", error)
+      }
+    }
+    if (infoExp.expsoftwarelibid) {
+      fetchData()
+    }
   }, [dispatch, infoExp.expsoftwarelibid])
-
   const setModel = (dataModel) => {
     if (dataModel.length !== 0) {
       const data = dataModel.find(item => item.modelid === infoExp.expmodelid)
-      console.log(data)
-      const temp = {
-        value: data.modelid,
-        label: data.modelname
+      if (data) {
+        console.log(data)
+        const temp = {
+          value: data.modelid,
+          label: data.modelname
+        }
+        return temp
+      } else {
+        console.log("Không tìm thấy dữ liệu cho modelid:", infoExp.expmodelid)
+        return null // hoặc giá trị mặc định khác tùy vào yêu cầu của bạn
       }
-      return temp
+    } else {
+      console.log("dataModel không có phần tử")
+      return null // hoặc giá trị mặc định khác tùy vào yêu cầu của bạn
     }
-
   }
+
   return (
     <Fragment>
       <div className='content-header'>

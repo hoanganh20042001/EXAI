@@ -48,21 +48,27 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
     return state.dataset.dataDataset
   })
   const ChangeLisData = (dataDataset) => {
-    const list = dataDataset.map(item => ({
-      value: {
-        id: item.datasetid,
-        datasetdescription: item.datasetdescription,
-        datasetfolderurl: item.datasetfolderurl,
-        datasetname: item.datasetname,
-        datasetowner: item.datasetowner,
-        datasetsoftID: item.datasetsoftID,
-        datasetsum: item.datasetsum,
-        datasettype: item.datasettype,
-      },
-      label: item.datasetname
-    }))
+    const list = []
+    if (Array.isArray(dataDataset)) {
+      dataDataset.map(item => {
+        list.push({
+          value: JSON.stringify({
+            id: item.datasetid,
+            datasetdescription: item.datasetdescription,
+            datasetfolderurl: item.datasetfolderurl,
+            datasetname: item.datasetname,
+            datasetowner: item.datasetowner,
+            datasetsoftID: item.datasetsoftID,
+            datasetsum: item.datasetsum,
+            datasettype: item.datasettype,
+          }),
+          label: item.datasetname
+        })
+      })
+    }
     return list
   }
+  
   
   useEffect(() => {
     dispatch(getListDataBySoftID({

@@ -130,7 +130,8 @@ const SimpleLineChart = ({ warning, stepper }) => {
       const interval = setInterval(() => {
         setCounter((prevCounter) => prevCounter + 1)
         const url = process.env.REACT_APP_API_URL
-        axios.get(`${url}/experiment/get-new-traning-result/?id_paramsconfigs=${dataExp.configid}&pre_result_index=0`
+        console.log(dataExp)
+        axios.get(`${url}/experiment/get-all-traning-results/?id_paramsconfigs=${dataExp.configid}`
           , {
             headers: {
               'Content-Type': 'application/json',

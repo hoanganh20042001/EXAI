@@ -15,6 +15,8 @@ const dataFace = (state = initialState, action) => {
             return { ...state, dataFace: action.data }
         case 'ADD_FACE':
             return { ...state, dataFace: action.data }
+        case 'GET_OBJ':
+            return { ...state, dataFace: action.data }
         default:
             return { ...state }
     }

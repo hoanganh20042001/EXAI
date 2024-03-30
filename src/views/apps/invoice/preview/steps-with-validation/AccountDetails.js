@@ -67,6 +67,7 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
   }
 
   useEffect(() => {
+    console.log(infoExp)
     dispatch(getListDataBySoftID({
       pageSize: 10,
       page: 1,

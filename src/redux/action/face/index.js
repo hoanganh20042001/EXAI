@@ -20,6 +20,30 @@ const getListFace = (data) => {
     })
   }
 }
+
+const getObj = (data) => {
+  const url = process.env.REACT_APP_API_URL
+  return async dispatch => {
+    await axios.get(`${url}/obj-detector/?web_URL=${data.web_Url}&conf=${data.conf}&iou=${data.iou}&dtViolence=${data.dtViolence}&dtWeapon=${data.dtWeapon}&dtAccident=${data.dtAccident}`, {
+      headers: {
+        'content-type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+      }
+    }).catch(err => {
+      toast(
+        <div className='d-flex'>
+          <div className='me-1'>
+            <Avatar size='sm' color='danger' icon={<X size={12} />} />
+          </div>
+          <div className='d-flex flex-column'>
+            <h6>Có lỗi xảy ra!</h6>
+          </div>
+        </div>
+      )
+    })
+  }
+}
+
 const searchFace = (data) => {
   const url = process.env.REACT_APP_API_URL
   return async dispatch => {
@@ -112,6 +136,8 @@ const deleteFace = (data) => {
     )
   }
 }
+
+
 const addFace = (data, file) => {
   const url = process.env.REACT_APP_API_URL
   const data1 = new FormData()
@@ -185,5 +211,6 @@ export {
   updateFace,
   deleteFace,
   addFace,
-  searchFace
+  searchFace,
+  getObj
 }

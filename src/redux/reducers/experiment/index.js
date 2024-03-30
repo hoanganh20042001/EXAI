@@ -15,6 +15,8 @@ const dataExp = (state = initialState, action) => {
             return { ...state, dataExp: action.data }
         case 'ADD_EXP':
             return { ...state, dataExp: action.data }
+        case 'GET_TRAINNING':
+            return { ...state, dataExp: action.data }
         default:
             return { ...state }
     }
