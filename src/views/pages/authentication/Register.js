@@ -55,15 +55,15 @@ const Register = () => {
     source = require(`@src/assets/images/pages/${illustration}`).default
 
   const onSubmit = data => {
+    console.log(data)
+    console.log(role)
+    console.log(toDateStringFormat1(new Date()))
     const url = process.env.REACT_APP_API_URL
     axios.post(`${url}/register/`, {
       email: data.email,
       name: data.username,
       password: data.password,
       roleid: role,
-      usrfullname: "",
-      usrdob: toDateStringFormat1(new Date()),
-      usrfaculty: ""
     })
       .then(res => {
         MySwal.fire({
@@ -77,6 +77,7 @@ const Register = () => {
         navigate('/login')
       })
       .catch(err => {
+        console.log(err.response)
         MySwal.fire({
           icon: 'error',
           title: 'Thất bại',
@@ -155,7 +156,7 @@ const Register = () => {
             <Form action='/' className='auth-register-form mt-2' onSubmit={handleSubmit(onSubmit)}>
               <div className='mb-1'>
                 <Label className='form-label' for='register-username'>
-                  Tên người dùng
+                  Tên người dùng <span style={{color: 'red'}}>*</span>
                 </Label>
                 <Controller
                   id='username'
@@ -169,7 +170,7 @@ const Register = () => {
               </div>
               <div className='mb-1'>
                 <Label className='form-label' for='register-email'>
-                  Email
+                  Email <span style={{color: 'red'}}>*</span>
                 </Label>
                 <Controller
                   id='email'
@@ -183,7 +184,7 @@ const Register = () => {
               </div>
               <div className='mb-1'>
                 <Label className='form-label' for='register-password'>
-                  Mật khẩu
+                  Mật khẩu <span style={{color: 'red'}}>*</span>
                 </Label>
                 <Controller
                   id='password'

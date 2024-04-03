@@ -105,7 +105,7 @@ const PersonalInfo = ({ stepper, infoExp, changeInfo }) => {
         <Row>
           <Col className='p-0' xl='8'>
             <div className='content-header'>
-              <h5 className='mb-0'>Chọn mô hình</h5>
+              <h5 className='mb-0'>Chọn mô hình <span style={{color: 'red'}}>*</span></h5>
             </div>
           </Col>
         </Row>

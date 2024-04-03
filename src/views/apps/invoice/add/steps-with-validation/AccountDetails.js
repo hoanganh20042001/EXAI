@@ -132,7 +132,7 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
         <Row>
           <Col className='p-0' xl='8'>
             <div className='content-header'>
-              <h5 className='mb-0'>Chọn bộ dữ liệu</h5>
+              <h5 className='mb-0'>Chọn bộ dữ liệu <span style={{color: 'red'}}>*</span></h5>
             </div>
           </Col>
         </Row>
@@ -149,7 +149,7 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
         <Row>
           <Col md='8' className='mb-1'>
             <Label className='form-label' for='city'>
-              Chọn bài toán
+              Chọn bài toán <span style={{color: 'red'}}>*</span>
             </Label>
             <Select
               isMulti={false}
@@ -168,7 +168,7 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
         <Row>
           <Col md='8' className='mb-1'>
             <Label className='form-label' for='city'>
-              Chọn bộ dữ liệu
+              Chọn bộ dữ liệu <span style={{color: 'red'}}>*</span>
             </Label>
             <Select
               isMulti={false}
