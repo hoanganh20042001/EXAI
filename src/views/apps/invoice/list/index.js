@@ -1,5 +1,5 @@
 // ** React Imports
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 
 // ** Table Columns
@@ -12,7 +12,7 @@ import DataTable from 'react-data-table-component'
 import StatsHorizontal from '@components/widgets/stats/StatsHorizontal'
 
 // ** Reactstrap Imports
-import { Button, Input, Row, Col, Card, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown, Modal, ModalBody, ModalHeader } from 'reactstrap'
+import { Button, Input, Row, Col, Card, DropdownItem, DropdownMenu, DropdownToggle, UncontrolledDropdown, Modal, ModalBody, ModalHeader, CardTitle, CardHeader } from 'reactstrap'
 
 import { getListExp, deleteExp, searchListExp } from '@store/action/experiment'
 // ** Store & Actions
@@ -44,7 +44,13 @@ const CustomHeader = ({ handleFilter, value, handleStatusValue, statusValue, han
   return (
     <div className='invoice-list-table-header w-100 py-2'>
       <Row>
-        <Col lg='6' className='d-flex align-items-center px-0 px-lg-1'>
+        <Col lg='3' className='d-flex align-items-center px-0 px-lg-1'>
+          <CardTitle tag='h4' style={{ fontWeight: 'bold', color: '#1203b1' }}>DANH SÁCH BÀI THÍ NGHIỆM</CardTitle>
+        </Col>
+
+      </Row>
+      <Row>
+      <Col lg='6' className='d-flex align-items-center px-0 px-lg-1'>
           {
             roleId.roleid === 3 ? <Button tag={Link} to='/apps/invoice/add' color='primary'>
               Thêm bài thí nghiệm
@@ -85,6 +91,7 @@ const InvoiceList = () => {
   const dataExp = useSelector((state) => {
     return state.experiment.dataExp
   })
+  const navigate = useNavigate()
   // ** States
   const [value, setValue] = useState('')
   // const [sort, setSort] = useState('desc')
@@ -123,6 +130,7 @@ const InvoiceList = () => {
   const handleDelet = () => {
     dispatch(deleteExp(infoData))
     setShowDelete(false)
+    navigate('/apps/invoice/list')
   }
   const handlePerPage = e => {
     dispatch(getListExp({

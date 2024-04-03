@@ -1,5 +1,6 @@
 // ** React Imports
 import { useRef, useState } from 'react'
+import { CardTitle, Col } from 'reactstrap'
 
 // ** Custom Components
 import Wizard from '@components/wizard'
@@ -70,6 +71,9 @@ const WizardHorizontal = () => {
 
   return (
     <div className='vertical-wizard'>
+      <Col lg='3' className='d-flex align-items-center px-0 px-lg-1'>
+          <CardTitle tag='h4' style={{ fontWeight: 'bold', color: '#1203b1' }}>DANH SÁCH BÀI THÍ NGHIỆM</CardTitle>
+        </Col>
       <Wizard
         type='vertical'
         ref={ref}
