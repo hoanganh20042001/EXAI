@@ -36,6 +36,7 @@ const Address = ({ stepper, infoExp, changeInfo, info }) => {
   const onSubmit = data => {
     if (stringconfig !== undefined) {
       console.log(!list.find(item => item.jsonstringparams === stringconfig))
+      console.log(1)
       if (!list.find(item => item.jsonstringparams === stringconfig)) {
         const url = process.env.REACT_APP_API_URL
         axios.get(`${url}/experiment/start-train/?id_exp=${infoExp.expid}&paramsconfigs_json=${stringconfig}`, {
@@ -56,6 +57,10 @@ const Address = ({ stepper, infoExp, changeInfo, info }) => {
     const url = process.env.REACT_APP_API_URL
     axios.get(`${url}/experiment/list-paramsconfigs/?id_exp=${infoExp.expid}`).then(response => {
       setList(response.data)
+      // console.log(response.data[0])
+      info.configid = response.data[0].configid
+      info.jsonstringparams = response.data[0].jsonstringparams
+      // console.log(info)
     })
   }, [])
   return (
@@ -80,14 +85,14 @@ const Address = ({ stepper, infoExp, changeInfo, info }) => {
         </tbody>
       </Table>
       <Form onSubmit={handleSubmit(onSubmit)}>
-        <Row>
+        {/* <Row>
           <Col md='6' className='mb-1'>
             <Label className='form-label' for='address'>
               Cấu hình tham số mới
             </Label>
             <Input type='textarea' placeholder='Cấu hình các tham số' value={stringconfig} onChange={e => setConfig(e.target.value)} />
           </Col>
-        </Row>
+        </Row> */}
 
         <div className='d-flex justify-content-between'>
           <Button type='button' color='primary' className='btn-prev' onClick={() => stepper.previous()}>

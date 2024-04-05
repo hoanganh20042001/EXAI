@@ -71,6 +71,8 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
   
   
   useEffect(() => {
+    console.log(infoExp)
+    console.log(dataDataset)
     dispatch(getListDataBySoftID({
       pageSize: 10,
       page: 1,
@@ -85,12 +87,28 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
   }
   const handleOnChange = (value, pop) => {
     changeInfo(value, pop)
+    infoExp.expsoftwarelibid = value
+    console.log(infoExp.expsoftwarelibid)
   }
   const handleOnChangeData = (value, pop) => {
     const infoModel = JSON.parse(value)
     setModel(infoModel)
     changeInfo(infoModel.id, pop)
     setEnable(false)
+  }
+  const setData = (dataDataset) => {
+    // console.log(dataDataset)
+    // console.log(infoExp.expdatasetid)
+    if (dataDataset.length !== 0) {
+      const data = dataDataset.find(item => item.datasetid === infoExp.expdatasetid)
+
+      const temp = {
+        value: data.datasetid,
+        label: data.datasetname
+      }
+      return temp
+    }
+
   }
   const HandleClick1 = () => {
     setCheckBox1(true)
@@ -145,6 +163,7 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
               theme={selectThemeColors}
               id={`language`}
               options={languageOptions}
+              value={{ value: infoExp.expsoftwarelibid, label: infoExp.expsoftwarelibid === 1 ? 'Nhận diện khuôn mặt' : infoExp.expsoftwarelibid === 2 ? 'Nhận diện hành vi' : 'Phát hiện khuôn mặt' }}
               className='react-select'
               classNamePrefix='select'
               isDisabled={displaySelect}
@@ -167,6 +186,7 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
               className='react-select'
               classNamePrefix='select'
               isDisabled={displaySelect}
+              value={setData(dataDataset)}
               onChange={(e) => handleOnChangeData(e.value, "expdatasetid")}
             />
           </Col>
@@ -180,7 +200,7 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
         </Row>
         <div className='d-flex justify-content-end'>
 
-          <Button type='submit' color='primary' className='btn-next' disabled={enable}>
+          <Button type='submit' color='primary' className='btn-next' >
             <span className='align-middle d-sm-inline-block d-none'>Next</span>
             <ArrowRight size={14} className='align-middle ms-sm-25 ms-0'></ArrowRight>
           </Button>
