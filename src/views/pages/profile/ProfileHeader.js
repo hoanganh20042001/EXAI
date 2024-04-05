@@ -196,7 +196,7 @@ const ProfileHeader = ({ data }) => {
             <div className='profile-tabs d-flex justify-content-between flex-wrap mt-1 mt-md-0' style={{ marginLeft: '5px' }}>
               <Button color='primary' onClick={() => handleEdit(data)}>
                 <Edit className='d-block d-md-none' size={14} />
-                <span className='fw-bold d-none d-md-block'>Cập nhật thông tin cá nhân</span>
+                <span className='fw-bold d-none d-md-block'>Cập nhật thông tin cá nhân </span>
               </Button>
               <Button color='primary' onClick={() => handleChange(data)}>
                 <Edit className='d-block d-md-none' size={14} />
@@ -216,7 +216,7 @@ const ProfileHeader = ({ data }) => {
           <Row tag='form' className='gy-1 pt-75' onSubmit={handleSubmit(onSubmit)}>
             <Col md={12} xs={12}>
               <Label className='form-label' for='email'>
-                Email
+                Email <span style={{color: 'red'}}>*</span>
               </Label>
               <Input id='email' type='text' value={infoData.email} onChange={(e) => handleOnChange(e.target.value, "email")} readOnly={edit} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.email}</p>
@@ -230,7 +230,7 @@ const ProfileHeader = ({ data }) => {
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='usrfullname'>
-                Tên đầy đủ
+                Tên đầy đủ <span style={{color: 'red'}}>*</span>
               </Label>
               <Input id='usrfullname' type='text' value={infoData.usrfullname} onChange={(e) => handleOnChange(e.target.value, "usrfullname")} readOnly={edit} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.usrfullname}</p>
@@ -295,7 +295,9 @@ const ProfileHeader = ({ data }) => {
                 Mật khẩu mới
               </Label>
               <Input id='usrfaculty' type='password' value={infoData.usrfaculty} onChange={(e) => setPass({ ...pass, ['new_password']: e.target.value })} />
-
+              {
+                pass.old_password !== pass.new_password || pass.new_password === '' ? <></> : <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>Mật khẩu mới không được trùng với mật khẩu cũ!</p>  
+              }
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='usrfaculty'>
@@ -303,7 +305,7 @@ const ProfileHeader = ({ data }) => {
               </Label>
               <Input id='usrfaculty' type='password' value={confirm} onChange={(e) => setConfirm(e.target.value)} />
               {
-                pass.new_password === confirm ? <></> : <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>Mật khẩu xác nhận không trùng khớp</p>
+                pass.new_password === confirm || confirm === undefined ? <></> : <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>Mật khẩu xác nhận không trùng khớp</p>
               }
             </Col>
             <Col xs={12} className='text-center mt-2 pt-50'>

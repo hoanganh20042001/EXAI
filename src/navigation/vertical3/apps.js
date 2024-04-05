@@ -29,7 +29,7 @@ export default [
   },
   {
     id: 'detectUrl',
-    title: 'Detect Url',
+    title: 'Sự kiện bất thường',
     icon:  <CheckSquare size={20} />,
     navLink: '/apps/detect',
     

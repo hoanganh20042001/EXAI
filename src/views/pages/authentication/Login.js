@@ -91,6 +91,18 @@ const Login = () => {
           ]
         }
         dispatch(handleLogin(data))
+      
+        MySwal.fire({
+          icon: 'success',
+          title: 'Thành công',
+          text: 'Bạn đã đăng nhập thành công.',
+          customClass: {
+            confirmButton: 'btn btn-error'
+          }
+        })
+        setTimeout(() => {
+          MySwal.close()
+        }, 1000)
         ability.update([
           {
             action: 'manage',
@@ -103,7 +115,7 @@ const Login = () => {
         MySwal.fire({
           icon: 'error',
           title: 'Thất bại',
-          text: err.response.data.non_field_errors[0],
+          text: "Email hoặc mật khẩu không đúng!",
           customClass: {
             confirmButton: 'btn btn-error'
           }

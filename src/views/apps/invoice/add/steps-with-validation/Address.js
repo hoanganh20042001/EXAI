@@ -28,6 +28,7 @@ const Address = ({ stepper, infoExp, changeInfo }) => {
 
   const onSubmit = data => {
     dispatch(addExp(infoExp))
+    console.log(dispatch)
     stepper.next()
   }
   const handleOnChange = (value, pop) => {

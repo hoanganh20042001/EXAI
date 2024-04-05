@@ -1,6 +1,6 @@
 // import { Link, } from 'react-router-dom'
 import { Fragment, useState, forwardRef, useEffect } from 'react'
-
+import axios from 'axios'
 import { toast } from 'react-hot-toast'
 import { useNavigate, Link } from 'react-router-dom'
 import Select from 'react-select'
@@ -12,7 +12,7 @@ import Avatar from '@components/avatar'
 // ** Third Party Components
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
-import { Eye, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Edit, Trash, Check, Clipboard, Search, MoreVertical } from 'react-feather'
+import { Eye, ChevronDown, Share, Printer, FileText, File, Grid, Copy, Plus, Edit, Trash, Check, Clipboard, Search, MoreVertical, X } from 'react-feather'
 import { useSelector, useDispatch } from 'react-redux'
 // import { toDateString } from '@utils'
 // import { getListFace, searchFace, updateFace, addFace, deleteFace } from '@store/action/face'
@@ -40,6 +40,7 @@ import {
   Badge
 } from 'reactstrap'
 import { useAbility } from '@casl/react'
+import { getObj } from '../../../redux/action/face'
 
 // ** Bootstrap Checkbox Component
 const BootstrapCheckbox = forwardRef((props, ref) => (
@@ -62,10 +63,16 @@ const ManageDetect = () => {
   const [showAdd, setShowAdd] = useState(false)
   const [infoData, setInfo] = useState({
   })
+  const [data, setData] = useState()
   const [object, setObject] = useState(true)
   const roleId = JSON.parse(localStorage.getItem('userData'))
-  const [infoaddData, setInfoadd] = useState({
-    name: ''
+  const [infoDetect, setInfoDetect] = useState({
+    web_Url: '',
+    conf: 0.25,
+    iou: 0.7,
+    dtViolence: true,
+    dtWeapon: true,
+    dtAccident: false,
   })
   const [file, setFile] = useState()
   const [valErrors, setValErrors] = useState({
@@ -77,12 +84,12 @@ const ManageDetect = () => {
     return state.face.dataFace
   })
 
-  const {
-    control,
-    setError,
-    handleSubmit,
-    formState: { errors }
-  } = useForm()
+  // const {
+  //   control,
+  //   setError,
+  //   handleSubmit,
+  //   formState: { errors }
+  // } = useForm()
 
   const navigate = useNavigate()
 
@@ -133,9 +140,16 @@ const ManageDetect = () => {
       creatorID: data.creatorID
     })
   }
-  const handleOnChange = (data, pop) => {
-    setInfo({ ...infoData, [pop]: data })
+  const handleOnChange = (e, pop) => {
+    const { value } = e.target
+    setInfoDetect({ ...infoDetect, [pop]: value })
+    // console.log(infoDetect)
   }
+  const handleOnChangeSelect = (value, pop) => {
+    setInfoDetect({ ...infoDetect, [pop]: value })
+    // console.log(infoDetect)
+  }
+
   function isDisable() {
     const o = Object.keys(valErrors)
       .filter((k) => valErrors[k] !== null)
@@ -152,6 +166,8 @@ const ManageDetect = () => {
     setInfoadd({ ...infoaddData, [pop]: data })
   }
 
+
+  // Tạo cột cho mỗi nhóm ảnh
   const columns = [
     {
       name: 'Ảnh',
@@ -161,28 +177,71 @@ const ManageDetect = () => {
         const url = process.env.REACT_APP_API_URL
         return (
           <div>
-            <img src={`${row.url}`} style={{ width: '100px' }}></img>
+            <img src={`${row.img1}`} style={{ width: '100px'}}></img>
           </div>
         )
       },
     },
     {
-      name: 'Đối tượng',
+      name: 'Ảnh',
       sortable: true,
       minWidth: '200px',
       selector: (row) => {
         const url = process.env.REACT_APP_API_URL
         return (
-          row.arr_face.map(item => {
-            return (
-              <p>{item.name}</p>
-            )
-          })
+          <div>
+            <img src={`${row.img2}`} style={{ width: '100px'}}></img>
+          </div>
         )
       },
     }
   ]
 
+  const handleSearch = (infoDetect) => {
+    console.log(infoDetect)
+    const url = process.env.REACT_APP_API_URL
+    axios.post(`${url}/obj-detector/?web_URL=${infoDetect.web_Url}&conf=${infoDetect.conf}&iou=${infoDetect.iou}&dtViolence=${infoDetect.dtViolence}&dtWeapon=${infoDetect.dtWeapon}&dtAccident=${infoDetect.dtAccident}`
+      , {
+        headers: {
+          'Content-Type': 'application/json',
+          // Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+        },
+
+      }).then(response => {
+        console.log(infoDetect)
+        console.log(response.data.data)
+        const objectArray = []
+        for (let i = 0; i < response.data.data.length; i += 3) {
+          if (i + 2 < response.data.data.length) {
+            const obj = {
+              img1: response.data.data[i].imgraw_url,
+              img2: response.data.data[i + 1].imgraw_url,
+            }
+
+            objectArray.push(obj)
+          } else {
+            // Xử lý trường hợp số lượng phần tử là lẻ
+            objectArray.push({ loneElement: array[i] })
+          }
+        }
+        console.log(objectArray)
+        setData(objectArray)
+      })
+      .catch(err => {
+        toast(
+          <div className='d-flex'>
+            <div className='me-1'>
+              <Avatar size='sm' color='danger' icon={<X size={12} />} />
+            </div>
+            <div className='d-flex flex-column'>
+              <h6>Có lỗi xảy ra!</h6>
+            </div>
+          </div>
+        )
+      })
+    // dispatch(getObj(infoDetect))
+    // console.log(dispatch)
+  }
   // ** Function to handle filter
   const handleFilter = e => {
     dispatch(searchFace(
@@ -261,43 +320,58 @@ const ManageDetect = () => {
             </DropdownMenu>
           </UncontrolledDropdown>} color='primary' />
           <div className='d-flex mt-md-0 mt-1'>
-            <Button className='ms-2' color='primary' onClick={() => handleFilter()}><Search size={15} /> <span className='align-middle ms-50'>Tìm kiếm</span> </Button> 
+            <Button className='ms-2' color='primary' onClick={() => handleSearch(infoDetect)}><Search size={15} /> <span className='align-middle ms-50'>Tìm kiếm</span> </Button>
           </div>
         </CardHeader>
         <Row className=' mx-0'>
-          <Col className='mb-1' md='5' sm='12'>
-            <Label className='me-1' for='search-input'>
-              Nhập link tìm kiếm
+          <Col className='mb-1' md='4' sm='12'>
+            <Label className='form-label' for='web_Url'>
+              Đường dẫn trang web cần tìm kiếm
             </Label>
-            <Input
-              className='dataTable-filter mb-50'
-              type='text'
-              bsSize='sm'
-              id='search-input'
-              value={searchValue}
-              onChange={e => setSearchValue(e.target.value)}
-            />
+            <Input id='web_Url' className=' mb-50' type='text' value={infoDetect.web_Url} onChange={(e) => handleOnChange(e, "web_Url")} />
           </Col>
-          <Col className='mb-1' md='2' sm='12'>
+          <Col md='2' ></Col>
+          <Col className='mb-1' md='3' sm='12'>
+            <Label className='form-label' for='conf'>
+              Ngưỡng confidence( Từ 0 đến 1 )
+            </Label>
+            <Input id='conf' className='dataTable-filter mb-50' type='text' value={infoDetect.conf} onChange={(e) => handleOnChange(e, "conf")} />
+          </Col>
+          <Col className='mb-1' md='3' sm='12'>
+            <Label className='form-label' for='iou'>
+              Ngưỡng iou( Từ 0 đến 1 )
+            </Label>
+            <Input id='iou' className='dataTable-filter mb-50' type='text' value={infoDetect.iou} onChange={(e) => handleOnChange(e, "iou")} />
+          </Col>
+
+        </Row>
+        <Row className='justify-content-end mx-0'>
+
+          <Col className='d-flex align-items-center justify-content-end mt-1' md='6' sm='12'>
             <Label className='me-1' for='search-input'>
-            Câu hình
+              Sự kiện cần phát hiện
+            </Label></Col>
+          <Col md='2' className='mb-1'>
+            <Label className='form-label' for='city'>
+              Bạo lực
             </Label>
             <Select
               isMulti={false}
               isClearable={false}
-              placeholder={''}
               theme={selectThemeColors}
+              placeholder={''}
               id={`language`}
-              options={languageOptions}
+              value={{ value: infoDetect.dtViolence, label: 'true' }}
+              options={[{ value: true, label: 'true' }, { value: false, label: 'false' }]}
               className='react-select'
               classNamePrefix='select'
               isDisabled={displaySelect}
-            // onChange={(e) => handleOnChange(e.value, "expsoftwarelibid")}
+              onChange={(e) => handleOnChangeSelect(e.value, "dtViolence")}
             />
           </Col>
           <Col md='2' className='mb-1'>
             <Label className='form-label' for='city'>
-              Chọn bộ dữ liệu
+              Vũ khí
             </Label>
             <Select
               isMulti={false}
@@ -305,16 +379,17 @@ const ManageDetect = () => {
               theme={selectThemeColors}
               placeholder={''}
               id={`language`}
-              options={languageOptions}
+              value={{ value: infoDetect.dtWeapon, label: 'true' }}
+              options={[{ value: true, label: 'true' }, { value: false, label: 'false' }]}
               className='react-select'
               classNamePrefix='select'
               isDisabled={displaySelect}
-              // onChange={(e) => handleOnChangeData(e.value, "expdatasetid")}
+              onChange={(e) => handleOnChangeSelect(e.value, "dtWeapon")}
             />
           </Col>
-          <Col md='1' className='mb-1'>
+          <Col md='2' className='mb-1'>
             <Label className='form-label' for='city'>
-            Bạo lực
+              Tai nạn
             </Label>
             <Select
               isMulti={false}
@@ -322,45 +397,12 @@ const ManageDetect = () => {
               theme={selectThemeColors}
               placeholder={''}
               id={`language`}
-              options={[{ value: 1, label: 'true' }, { value: 0, label: 'false' }]}
+              value={{ value: infoDetect.dtAccident, label: 'true' }}
+              options={[{ value: true, label: 'true' }, { value: false, label: 'false' }]}
               className='react-select'
               classNamePrefix='select'
               isDisabled={displaySelect}
-              // onChange={(e) => handleOnChangeData(e.value, "expdatasetid")}
-            />
-          </Col>  
-            <Col md='1' className='mb-1'>
-            <Label className='form-label' for='city'>
-            Vũ khí
-            </Label>
-            <Select
-              isMulti={false}
-              isClearable={false}
-              theme={selectThemeColors}
-              placeholder={''}
-              id={`language`}
-              options={[{ value: 1, label: 'true' }, { value: 0, label: 'false' }]}
-              className='react-select'
-              classNamePrefix='select'
-              isDisabled={displaySelect}
-              // onChange={(e) => handleOnChangeData(e.value, "expdatasetid")}
-            />
-          </Col>  
-            <Col md='1' className='mb-1'>
-            <Label className='form-label' for='city'>
-            Sự cố
-            </Label>
-            <Select
-              isMulti={false}
-              isClearable={false}
-              theme={selectThemeColors}
-              placeholder={''}
-              id={`language`}
-              options={[{ value: 1, label: 'true' }, { value: 0, label: 'false' }]}
-              className='react-select'
-              classNamePrefix='select'
-              isDisabled={displaySelect}
-              // onChange={(e) => handleOnChangeData(e.value, "expdatasetid")}
+              onChange={(e) => handleOnChangeSelect(e.value, "dtAccident")}
             />
           </Col>
         </Row>
@@ -376,7 +418,7 @@ const ManageDetect = () => {
             paginationComponent={CustomPagination}
             paginationDefaultPage={currentPage + 1}
             selectableRowsComponent={BootstrapCheckbox}
-            data={dataFace.data}
+            data={data}
             customStyles={{
               rows: {
                 style: {
@@ -389,83 +431,7 @@ const ManageDetect = () => {
           />
         </div>
       </Card>
-      <Modal isOpen={showEdit} toggle={() => setShowEdit(!showEdit)} className='modal-dialog-centered modal-lg'>
-        <ModalHeader className='bg-transparent' toggle={() => setShowEdit(!showEdit)}></ModalHeader>
-        <ModalBody className='px-sm-5 mx-50 pb-5'>
-          <div className='text-center mb-2'>
-            <h1 className='mb-1'>Chỉnh sửa đối tượng</h1>
-            <p>Cập nhật chi tiết thông tin</p>
-          </div>
-          <Row tag='form' className='gy-1 pt-75' onSubmit={handleSubmit(onSubmit)}>
-            <Col md={12} xs={12}>
-              <Label className='form-label' for='name'>
-                Tên đối tượng
-              </Label>
-              <Input id='name' type='text' value={infoData.name} onChange={(e) => handleOnChange(e.target.value, "name")} />
-            </Col>
-            <Col xs={12} className='text-center mt-2 pt-50'>
-              <Button type='submit' className='me-1' color='primary' onClick={e => handleUpdate()}>
-                Cập nhật
-              </Button>
-              <Button type='reset' color='secondary' outline onClick={() => setShowEdit(false)}>
-                Hủy
-              </Button>
-            </Col>
-          </Row>
-        </ModalBody>
-      </Modal>
-      <Modal isOpen={showAdd} toggle={() => setShowAdd(!showAdd)} className='modal-dialog-centered modal-lg'>
-        <ModalHeader className='bg-transparent' toggle={() => setShowAdd(!showAdd)}></ModalHeader>
-        <ModalBody className='px-sm-5 mx-50 pb-5'>
-          <div className='text-center mb-2'>
-            <h1 className='mb-1'>Thêm đối tượng</h1>
-            <p>Thêm chi tiết thông tin</p>
-          </div>
-          <Row tag='form' className='gy-1 pt-75' onSubmit={handleSubmit(onSubmit)}>
-            <Col md={12} xs={12}>
-              <Label className='form-label' for='name'>
-                Tên đối tượng
-              </Label>
-              <Input id='name' type='text' value={infoaddData.datasetname} onChange={(e) => handleOnChangeAdd(e.target.value, "name")} />
-              <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.datasetname}</p>
-            </Col>
 
-            <Col md={12} xs={12}>
-              <Label className='form-label' for='salary' >
-                Chọn ảnh
-              </Label>
-              <Input type='file' id='salary' onChange={(e) => setFile(e.target.files[0])} />
-            </Col>
-            <Col xs={12} className='text-center mt-2 pt-50'>
-              <Button type='submit' className='me-1' color='primary' onClick={handleAdd}>
-                Thêm mới
-              </Button>
-              <Button type='reset' color='secondary' outline onClick={() => setShowAdd(false)}>
-                Hủy
-              </Button>
-            </Col>
-          </Row>
-        </ModalBody>
-      </Modal>
-      <Modal isOpen={showDelete} toggle={() => setShowDelete(!showDelete)} className='modal-dialog-centered modal-lg'>
-        <ModalHeader className='bg-transparent' toggle={() => setShowDelete(!showDelete)}></ModalHeader>
-        <ModalBody className='px-sm-5 mx-50 pb-5'>
-          <div className='text-center mb-2'>
-            <h1 className='mb-1'>Xóa đối tượng</h1>
-            <p>Bạn có muốn xóa thông tin ngay bây giờ không?</p>
-          </div>
-          <Row tag='form' className='gy-1 pt-75' onSubmit={handleSubmit(onSubmit)}>
-            <Col xs={12} className='text-center mt-2 pt-50'>
-              <Button type='reset' className='me-1' color='secondary' onClick={() => setShowDelete(false)}>
-                Hủy
-              </Button>
-              <Button type='submit' color='danger' onClick={handleDelete}>
-                Xóa
-              </Button>
-            </Col>
-          </Row>
-        </ModalBody>
-      </Modal>
     </Fragment>
   )
 }
