@@ -97,7 +97,27 @@ const PersonalInfo = ({ stepper, infoExp, changeInfo }) => {
     }))
 
   }, [dispatch, infoExp.expsoftwarelibid])
-
+  const setModel = (dataModel) => {
+    console.log(dataModel)
+    console.log(infoExp.expmodelid)
+    if (dataModel.length !== 0) {
+      const data = dataModel.find(item => item.modelid === infoExp.expmodelid)
+      if (data) {
+        console.log(data)
+        const temp = {
+          value: data.modelid,
+          label: data.modelname
+        }
+        return temp
+      } else {
+        console.log("Không tìm thấy dữ liệu cho modelid:", infoExp.expmodelid)
+        return null // hoặc giá trị mặc định khác tùy vào yêu cầu của bạn
+      }
+    } else {
+      console.log("dataModel không có phần tử")
+      return null // hoặc giá trị mặc định khác tùy vào yêu cầu của bạn
+    }
+  }
   return (
     <Fragment>
       <div className='content-header'>
@@ -122,6 +142,7 @@ const PersonalInfo = ({ stepper, infoExp, changeInfo }) => {
               options={ChangeLisModel(dataModel)}
               className='react-select'
               classNamePrefix='select'
+              value={setModel(dataModel)}
               isDisabled={displaySelect}
               onChange={(e) => handleOnChangeData(e.value, "expmodelid")}
             />

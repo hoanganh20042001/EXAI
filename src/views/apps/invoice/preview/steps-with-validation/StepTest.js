@@ -52,7 +52,8 @@ const StepTest = ({ stepper, infoExp, changeInfo, info }) => {
   } = useForm({ defaultValues })
 
   const onSubmit = () => {
-    console.log(info)
+    console.log(info.configid)
+    console.log(infoModel.id)
     // if (Object.values(data).every(field => field.length > 0)) {
     const url = process.env.REACT_APP_API_URL
     axios.get(`${url}/experiment/start-test/?id_dataset=${infoModel.id}&id_paramsconfigs=${info.configid}`, {
