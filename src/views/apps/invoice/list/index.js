@@ -45,7 +45,7 @@ const CustomHeader = ({ handleFilter, value, handleStatusValue, statusValue, han
     <div className='invoice-list-table-header w-100 py-2'>
       <Row>
         <Col lg='3' className='d-flex align-items-center px-0 px-lg-1'>
-          <CardTitle tag='h4' style={{ fontWeight: 'bold', color: '#1203b1' }}>DANH SÁCH BÀI THÍ NGHIỆM</CardTitle>
+          <CardTitle tag='h4' style={{ fontWeight: 'bold', color: '#1203b1' }}>BÀI THÍ NGHIỆM</CardTitle>
         </Col>
 
       </Row>
