@@ -141,8 +141,11 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
         <Row>
           <Col md='8' className='mb-1'>
             <Label className='form-label' for='city'>
-              Tên bài thí nghiệm
+              Tên bài thí nghiệm <span style={{color: 'red'}}>*</span>
             </Label><Input placeholder='Tên bài thí nghiệm' value={infoExp.expname} onChange={e => handleOnChange(e.target.value, 'expname')} />
+            {
+                infoExp.expname !== '' || infoExp.expname === null ? <></> : <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>Mật khẩu mới không được trùng với mật khẩu cũ!</p>  
+              }
           </Col>
 
         </Row>
