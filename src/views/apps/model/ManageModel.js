@@ -92,7 +92,7 @@ const ManageModel = () => {
   const roleID = JSON.parse(localStorage.getItem('userData'))
   useEffect(() => {
     dispatch(getListModel({
-      pageNumber: currentPage + 1
+      page: currentPage + 1
     }))
   }, [dispatch, currentPage])
   // const status = {
@@ -268,7 +268,6 @@ const ManageModel = () => {
   // ** Function to handle filter
   const handleFilter = e => {
     const value = e.target.value
-    let updatedData = []
     setSearchValue(value)
 
     const status = {
@@ -280,24 +279,10 @@ const ManageModel = () => {
     }
 
     if (value.length) {
-      updatedData = dataModel.results.filter(item => {
-        const startsWith =
-          item.modelname.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.default_json_Paramsconfigs.toLowerCase().startsWith(value.toLowerCase()) ||
-          toDateString(item.modelcreatedtime).toLowerCase().startsWith(value.toLowerCase()) 
-
-        const includes =
-          item.modelname.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.default_json_Paramsconfigs.toLowerCase().startsWith(value.toLowerCase()) ||
-          toDateString(item.modelcreatedtime).toLowerCase().startsWith(value.toLowerCase()) 
-
-        if (startsWith) {
-          return startsWith
-        } else if (!startsWith && includes) {
-          return includes
-        } else return null
-      })
-      setFilteredData(updatedData)
+      dispatch(getListModel({
+        page: currentPage + 1,
+        search: value
+      }))
       setSearchValue(value)
     }
   }
@@ -381,7 +366,7 @@ const ManageModel = () => {
             paginationComponent={CustomPagination}
             paginationDefaultPage={currentPage + 1}
             selectableRowsComponent={BootstrapCheckbox}
-            data={searchValue.length ? filteredData : dataModel.results}
+            data={dataModel.results}
           />
         </div>
       </Card>

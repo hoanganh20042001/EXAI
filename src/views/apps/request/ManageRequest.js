@@ -202,7 +202,7 @@ const ManageRequest = () => {
           <Avatar size='sm' color='success' icon={<Check size={12} />} />
         </div>
         <div className='d-flex flex-column'>
-          <h6>Bạn đã xóa người dùng thành công!</h6>
+          <h6>Bạn đã Xóa người dùng thành công!</h6>
         </div>
       </div>
     )
@@ -584,8 +584,8 @@ const ManageRequest = () => {
         <ModalHeader className='bg-transparent' toggle={() => setShowDelete(!showDelete)}></ModalHeader>
         <ModalBody className='px-sm-5 mx-50 pb-5'>
           <div className='text-center mb-2'>
-            <h1 className='mb-1'>Xóa người dùng</h1>
-            <p>Bạn có muốn xóa thông tin ngay bây giờ không?</p>
+            <h1 className='mb-1'>Xóa dùng</h1>
+            <p>Bạn có muốn Xóa người dùng ngay bây giờ không?</p>
           </div>
           <Row tag='form' className='gy-1 pt-75' onSubmit={handleSubmit(onSubmit)}>
             <Col xs={12} className='text-center mt-2 pt-50'>

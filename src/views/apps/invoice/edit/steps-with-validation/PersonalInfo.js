@@ -97,7 +97,27 @@ const PersonalInfo = ({ stepper, infoExp, changeInfo }) => {
     }))
 
   }, [dispatch, infoExp.expsoftwarelibid])
-
+  const setModel = (dataModel) => {
+    console.log(dataModel)
+    console.log(infoExp.expmodelid)
+    if (dataModel.length !== 0) {
+      const data = dataModel.find(item => item.modelid === infoExp.expmodelid)
+      if (data) {
+        console.log(data)
+        const temp = {
+          value: data.modelid,
+          label: data.modelname
+        }
+        return temp
+      } else {
+        console.log("Không tìm thấy dữ liệu cho modelid:", infoExp.expmodelid)
+        return null // hoặc giá trị mặc định khác tùy vào yêu cầu của bạn
+      }
+    } else {
+      console.log("dataModel không có phần tử")
+      return null // hoặc giá trị mặc định khác tùy vào yêu cầu của bạn
+    }
+  }
   return (
     <Fragment>
       <div className='content-header'>
@@ -122,6 +142,7 @@ const PersonalInfo = ({ stepper, infoExp, changeInfo }) => {
               options={ChangeLisModel(dataModel)}
               className='react-select'
               classNamePrefix='select'
+              value={setModel(dataModel)}
               isDisabled={displaySelect}
               onChange={(e) => handleOnChangeData(e.value, "expmodelid")}
             />
@@ -139,6 +160,9 @@ const PersonalInfo = ({ stepper, infoExp, changeInfo }) => {
           <Button type='button' color='primary' className='btn-prev' onClick={() => stepper.previous()}>
             <ArrowLeft size={14} className='align-middle me-sm-25 me-0'></ArrowLeft>
             <span className='align-middle d-sm-inline-block d-none'>Previous</span>
+          </Button>
+          <Button className='btn' style={{ marginRight: '15px' }} onClick={(e) => history.back()}>
+            <span className='align-middle d-sm-inline-block d-none'>Hủy</span>
           </Button>
           <Button type='submit' color='primary' className='btn-next'>
             <span className='align-middle d-sm-inline-block d-none'>Next</span>

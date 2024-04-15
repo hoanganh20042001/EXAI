@@ -209,7 +209,7 @@ const SimpleLineChart = ({ warning, stepper }) => {
             <RenderChart listTrain={listTrain}></RenderChart>
           </div>
           <div className='d-flex justify-content-between'>
-            <Button type='button' color='primary' className='btn-prev' onClick={() => stepper.previous()} disabled={pre}>
+            <Button type='button' color='primary' className='btn-prev' onClick={() => stepper.previous()} >
               <ArrowLeft size={14} className='align-middle me-sm-25 me-0'></ArrowLeft>
               <span className='align-middle d-sm-inline-block d-none'>Cấu hình lại</span>
             </Button>
@@ -217,7 +217,7 @@ const SimpleLineChart = ({ warning, stepper }) => {
               <span className='align-middle d-sm-inline-block d-none'>Dừng huấn luyện</span>
               <AlertCircle size={14} className='align-middle ms-sm-25 ms-0'></AlertCircle>
             </Button>
-            <Button type='submit' color='primary' className='btn-next' disabled={next}>
+            <Button type='submit' color='primary' className='btn-next' >
               <span className='align-middle d-sm-inline-block d-none'>Đánh giá</span>
               <ArrowRight size={14} className='align-middle ms-sm-25 ms-0'></ArrowRight>
             </Button>

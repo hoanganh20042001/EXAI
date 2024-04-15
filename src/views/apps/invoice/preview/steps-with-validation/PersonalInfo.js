@@ -107,6 +107,8 @@ const PersonalInfo = ({ stepper, infoExp, changeInfo }) => {
     }
   }, [dispatch, infoExp.expsoftwarelibid])
   const setModel = (dataModel) => {
+    console.log(dataModel)
+    console.log(infoExp.expmodelid)
     if (dataModel.length !== 0) {
       const data = dataModel.find(item => item.modelid === infoExp.expmodelid)
       if (data) {

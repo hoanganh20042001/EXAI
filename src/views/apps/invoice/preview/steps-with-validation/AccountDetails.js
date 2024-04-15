@@ -76,12 +76,14 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
 
   }, [dispatch, infoExp.expsoftwarelibid])
   const setData = (dataDataset) => {
+    console.log(dataDataset)
+    console.log(infoExp.expdatasetid)
     if (dataDataset.length !== 0) {
       const data = dataDataset.find(item => item.datasetid === infoExp.expdatasetid)
       console.log(dataDataset)
       const temp = {
-        value: dataDataset.datasetid,
-        label: dataDataset.datasetname
+        value: data.datasetid,
+        label: data.datasetname
       }
       return temp
     }

@@ -179,7 +179,7 @@ const SimpleLineChart = ({ warning, stepper, infoExp, info }) => {
       const interval = setInterval(() => {
         setCounter((prevCounter) => prevCounter + 1)
         const url = process.env.REACT_APP_API_URL
-        console.log(infoExp)
+        // console.log(infoExp)
         axios.get(`${url}/experiment/list-paramsconfigs/?id_exp=${infoExp.expid}`).then(response => {
   
           setId_paramsconfigs(response.data[0].configid)

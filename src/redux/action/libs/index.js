@@ -10,8 +10,10 @@ import { X, Check } from 'react-feather'
 // ** Get all Data
 const getListLibs = (data) => {
   const url = process.env.REACT_APP_API_URL
+  // console.log(data)
   return async dispatch => {
     await axios.get(`${url}/expAIs/?page=${data.pageNumber}`).then(response => {
+      // response.data.results.reverse()
       dispatch({
         type: 'GET_LIBS',
         data: response.data
@@ -121,7 +123,7 @@ const addLibs = (data) => {
             <Avatar size='sm' color='success' icon={<Check size={12} />} />
           </div>
           <div className='d-flex flex-column'>
-            <h6>Bạn đã xóa thông tin thành công!</h6>
+            <h6>Bạn đã thêm thông tin thành công!</h6>
           </div>
         </div>
       )

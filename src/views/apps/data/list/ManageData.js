@@ -68,7 +68,6 @@ const ManageData = () => {
   const [valErrors, setValErrors] = useState({
     datasetname: '',
     datasetsum: '',
-    datasetdescription: ''
   })
   const dataDataset = useSelector((state) => {
     return state.dataset.dataDataset
@@ -96,20 +95,52 @@ const ManageData = () => {
   const navigate = useNavigate()
 
   const handleDelete = () => {
+    dispatch(deleteData(infoData.datasetid))
     setShowDelete(false)
   }
 
   const handleUpdate = () => {
-    dispatch(updateData(infoData, file))
-    setShowEdit(false)
+    if (infoData.datasetsum !== undefined && infoData.datasetname.trim() !== '') {
+      dispatch(updateData(infoData, file))
+      setShowEdit(false)
+      setValErrors({
+        datasetsum: '',
+        datasetname: '',
+      })
+    } else {
+      let temp = valErrors
+      if (infoData.datasetname.trim() === '' || infoData.datasetname === undefined) { temp = { ...temp, datasetname: 'Không được để trống tên' } } 
+      setValErrors(temp)
+    }
+   
   }
   const handleAdd = () => {
-    dispatch(addData(infoaddData, file))
-    setShowAdd(false)
+    if (infoaddData.datasetsum !== undefined && infoaddData.datasetname.trim() !== '') {
+      dispatch(addData(infoaddData, file))
+      setShowAdd(false)
+      setValErrors({
+        datasetsum: '',
+        datasetname: '',
+      })
+    } else {
+      let temp = valErrors
+      if (infoaddData.datasetname.trim() === '' || infoaddData.datasetname === undefined) { temp = { ...temp, datasetname: 'Không được để trống tên' } } 
+      setValErrors(temp)
+    }
+
+    
   }
   const handleDelet = (data) => {
-    dispatch(deleteData(data.datasetid))
-    setShowDelete(false)
+    setInfo({
+      datasetid: data.datasetid,
+      datasetname: data.datasetname,
+      datasettype: data.datasettype,
+      datasetfolderurl: data.datasetfolderurl,
+      datasetsoftID: data.datasetsoftID,
+      datasetsum: data.datasetsum,
+      datasetdescription: data.datasetdescription,
+    })
+    setShowDelete(true)
   }
   const handleHistory = (data) => {
     navigate(`/managements/userHistory/${data}`)
@@ -138,7 +169,6 @@ const ManageData = () => {
       datasetfolderurl: data.datasetfolderurl,
       datasetsoftID: data.datasetsoftID,
       datasetsum: data.datasetsum,
-      datasetdescription: data.datasetdescription,
     })
   }
   const handleOnChange = (data, pop) => {
@@ -223,7 +253,6 @@ const ManageData = () => {
   // ** Function to handle filter
   const handleFilter = e => {
     const value = e.target.value
-    let updatedData = []
     setSearchValue(value)
 
     const status = {
@@ -233,26 +262,11 @@ const ManageData = () => {
     }
 
     if (value.length) {
-      updatedData = dataDataset.results.filter(item => {
-        const startsWith =
-          item.datasetname.toLowerCase().startsWith(value.toLowerCase()) ||
-          toDateString(item.datasetcreatedtime).toLowerCase().startsWith(value.toLowerCase()) ||
-          item.datasetowner.toLowerCase().startsWith(value.toLowerCase()) ||
-          status[item.datasetsoftID].title.toLowerCase().startsWith(value.toLowerCase())
-
-        const includes =
-          item.datasetname.toLowerCase().startsWith(value.toLowerCase()) ||
-          toDateString(item.datasetcreatedtime).toLowerCase().startsWith(value.toLowerCase()) ||
-          item.datasetowner.toLowerCase().startsWith(value.toLowerCase()) ||
-          status[item.datasetsoftID].title.toLowerCase().startsWith(value.toLowerCase())
-
-        if (startsWith) {
-          return startsWith
-        } else if (!startsWith && includes) {
-          return includes
-        } else return null
-      })
-      setFilteredData(updatedData)
+      dispatch(getListData({
+        pageSize: 10,
+        page: currentPage + 1,
+        datasetName: value
+      }))
       setSearchValue(value)
     }
   }
@@ -328,7 +342,7 @@ const ManageData = () => {
             paginationComponent={CustomPagination}
             paginationDefaultPage={currentPage + 1}
             selectableRowsComponent={BootstrapCheckbox}
-            data={searchValue.length ? filteredData : dataDataset.results}
+            data={dataDataset.results}
           />
         </div>
       </Card>
@@ -342,16 +356,18 @@ const ManageData = () => {
           <Row tag='form' className='gy-1 pt-75' onSubmit={handleSubmit(onSubmit)}>
             <Col md={12} xs={12}>
               <Label className='form-label' for='datasetname'>
-                Tên bộ dữ liệu
+                Tên bộ dữ liệu <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='datasetname' type='text' value={infoData.datasetname} onChange={(e) => handleOnChange(e.target.value, "datasetname")} />
+              <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.datasetname}</p>
 
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='datasetsum'>
-                Số lượng mẫu
+                Số lượng mẫu <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='datasetsum' type='number' value={infoData.datasetsum} onChange={(e) => handleOnChange(e.target.value, "datasetsum")} />
+              <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.datasetsum}</p>
 
             </Col>
             <Col md={12} xs={12}>
@@ -373,7 +389,7 @@ const ManageData = () => {
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='salary' >
-                Chọn file zip bộ dữ liệu
+                Chọn file zip bộ dữ liệu 
               </Label>
               <Input type='file' id='salary' onChange={(e) => setFile(e.target.files[0])} />
             </Col>
@@ -428,14 +444,14 @@ const ManageData = () => {
           <Row tag='form' className='gy-1 pt-75' onSubmit={handleSubmit(onSubmit)}>
             <Col md={12} xs={12}>
               <Label className='form-label' for='datasetname'>
-                Tên bộ dữ liệu
+                Tên bộ dữ liệu <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='datasetname' type='text' value={infoaddData.datasetname} onChange={(e) => handleOnChangeAdd(e.target.value, "datasetname")} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.datasetname}</p>
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='datasetsum'>
-                Số lượng mẫu
+                Số lượng mẫu <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='datasetsum' type='number' value={infoaddData.datasetsum} onChange={(e) => handleOnChangeAdd(e.target.value, "datasetsum")} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.datasetsum}</p>
@@ -455,11 +471,10 @@ const ManageData = () => {
                 Mô tả
               </Label>
               <Input id='datasetdescription' type='textarea' value={infoaddData.datasetdescription} onChange={(e) => handleOnChangeAdd(e.target.value, "datasetdescription")} />
-              <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.datasetdescription}</p>
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='salary' >
-                Chọn file zip bộ dữ liệu
+                Chọn file zip bộ dữ liệu 
               </Label>
               <Input type='file' id='salary' onChange={(e) => setFile(e.target.files[0])} />
             </Col>

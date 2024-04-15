@@ -11,12 +11,21 @@ import { X, Check } from 'react-feather'
 const getListModel = (data) => {
   const url = process.env.REACT_APP_API_URL
   return async dispatch => {
-    await axios.get(`${url}/models/?page=${data.pageNumber}`).then(response => {
-      dispatch({
-        type: 'GET_MODEL',
-        data: response.data
+    if (data.search) {
+      await axios.get(`${url}/models/?page=${data.page}&search=${data.search}`).then(response => {
+        dispatch({
+          type: 'GET_MODEL',
+          data: response.data
+        })
       })
-    })
+    } else {
+      await axios.get(`${url}/models/?page=${data.page}`).then(response => {
+        dispatch({
+          type: 'GET_MODEL',
+          data: response.data
+        })
+      })
+    }
   }
 }
 const getListModelBySoftID = (data) => {
