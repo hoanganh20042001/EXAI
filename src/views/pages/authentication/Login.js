@@ -1,5 +1,5 @@
 // ** React Imports
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import Cookies from 'universal-cookie'
 // ** Custom Hooks
@@ -62,6 +62,9 @@ const Login = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const ability = useContext(AbilityContext)
+  const [erremail, setErrmail] = useState('')
+  const [errpass, setErrpass] = useState('')
+
   const {
     control,
     // setError,
@@ -73,54 +76,61 @@ const Login = () => {
 
   const onSubmit = data => {
     const url = process.env.REACT_APP_API_URL
-    axios.post(`${url}/login/`, {
-      email: data.loginEmail,
-      password: data.password
-    }, {
-      withCredentials: true
-    })
-      .then(res => {
-        console.log(res)
-        const data = {
-          ...res.data,
-          ability: [
+    if (data.loginEmail !== "" && data.password !== "") {
+      axios.post(`${url}/login/`, {
+        email: data.loginEmail,
+        password: data.password
+      }, {
+        withCredentials: true
+      })
+        .then(res => {
+          console.log(res)
+          const data = {
+            ...res.data,
+            ability: [
+              {
+                action: 'manage',
+                subject: 'all'
+              }
+            ]
+          }
+          dispatch(handleLogin(data))
+
+          MySwal.fire({
+            icon: 'success',
+            title: 'Thành công',
+            text: 'Bạn đã đăng nhập thành công.',
+            customClass: {
+              confirmButton: 'btn btn-error'
+            }
+          })
+          setTimeout(() => {
+            MySwal.close()
+          }, 1000)
+          ability.update([
             {
               action: 'manage',
               subject: 'all'
             }
-          ]
-        }
-        dispatch(handleLogin(data))
-      
-        MySwal.fire({
-          icon: 'success',
-          title: 'Thành công',
-          text: 'Bạn đã đăng nhập thành công.',
-          customClass: {
-            confirmButton: 'btn btn-error'
-          }
+          ])
+          navigate(getHomeRouteForLoggedInUser('admin'))
         })
-        setTimeout(() => {
-          MySwal.close()
-        }, 1000)
-        ability.update([
-          {
-            action: 'manage',
-            subject: 'all'
-          }
-        ])
-        navigate(getHomeRouteForLoggedInUser('admin'))
-      })
-      .catch(err => {
-        MySwal.fire({
-          icon: 'error',
-          title: 'Thất bại',
-          text: "Email hoặc mật khẩu không đúng!",
-          customClass: {
-            confirmButton: 'btn btn-error'
-          }
+        .catch(err => {
+          MySwal.fire({
+            icon: 'error',
+            title: 'Thất bại',
+            text: "Email hoặc mật khẩu không đúng!",
+            customClass: {
+              confirmButton: 'btn btn-error'
+            }
+          })
         })
-      })
+    } else {
+      if (data.loginEmail === "") setErrmail("Không được để trống email")
+      if (data.password === "") setErrpass("Không được để trống mật khẩu")
+
+    }
+
 
   }
 
@@ -208,6 +218,7 @@ const Login = () => {
                     />
                   )}
                 />
+                <span style={{ color: 'red' }}> {erremail}</span>
               </div>
               <div className='mb-1'>
                 <div className='d-flex justify-content-between'>
@@ -226,6 +237,8 @@ const Login = () => {
                     <InputPasswordToggle className='input-group-merge' invalid={errors.password && true} {...field} />
                   )}
                 />
+                <span style={{ color: 'red' }}> {errpass}</span>
+
               </div>
               <Button type='submit' color='primary' block>
                 Đăng nhập

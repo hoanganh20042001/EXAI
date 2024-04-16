@@ -9,6 +9,19 @@ import { X, Check } from 'react-feather'
 const getListUser = (data) => {
   const url = process.env.REACT_APP_API_URL
   return async dispatch => {
+    if (data.search) {
+      await axios.get(`${url}/accounts/?pageSize=${data.pageSize}&page=${data.pageNumber}&search=${data.search}`, {
+        headers: {
+          'content-type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`
+        }
+      }).then(response => {
+        dispatch({
+          type: 'GET_USER',
+          data: response.data
+        })
+      })
+    } else {
     await axios.get(`${url}/accounts/?pageSize=${data.pageSize}&page=${data.pageNumber}`, {
       headers: {
         'content-type': 'application/json',
@@ -20,7 +33,9 @@ const getListUser = (data) => {
         data: response.data
       })
     })
-  }
+    }
+    }
+   
 }
 const getListUserNoClass = (data) => {
   const url = process.env.REACT_APP_API_URL
@@ -101,9 +116,8 @@ const updateUser = (data) => {
       }
 
     }).then(response => {
-      dispatch(getListUser({
-        pageNumber: 1,
-        pageSize: 10
+      dispatch(getInfo({
+        data: data.id
       }))
       toast(
         <div className='d-flex'>
@@ -141,7 +155,7 @@ const deleteUser = (data) => {
 
     }).then(response => {
       dispatch(getListUser({
-        pageNumber: 0,
+        pageNumber: 1,
         pageSize: 10
       }))
       toast(
@@ -150,7 +164,7 @@ const deleteUser = (data) => {
             <Avatar size='sm' color='success' icon={<Check size={12} />} />
           </div>
           <div className='d-flex flex-column'>
-            <h6>Bạn đã xóa thông tin thành công!</h6>
+            <h6>Bạn đã Xóa tài khoản thành công!</h6>
           </div>
         </div>
       )

@@ -161,6 +161,9 @@ const PersonalInfo = ({ stepper, infoExp, changeInfo }) => {
             <ArrowLeft size={14} className='align-middle me-sm-25 me-0'></ArrowLeft>
             <span className='align-middle d-sm-inline-block d-none'>Previous</span>
           </Button>
+          <Button className='btn' style={{ marginRight: '15px' }} onClick={(e) => history.back()}>
+            <span className='align-middle d-sm-inline-block d-none'>Hủy</span>
+          </Button>
           <Button type='submit' color='primary' className='btn-next'>
             <span className='align-middle d-sm-inline-block d-none'>Next</span>
             <ArrowRight size={14} className='align-middle ms-sm-25 ms-0'></ArrowRight>

@@ -25,7 +25,8 @@ const PersonalInfo = ({ stepper, infoExp, changeInfo }) => {
   // ** Hooks
   const dispatch = useDispatch()
   const [checkbox1, setCheckBox1] = useState(true)
-  const [checkbox2, setCheckBox2] = useState(false)
+  const [enable, setEnable] = useState(true)
+
   const [displaySelect, setDisplay] = useState(false)
   const [displayUpload, setDisplayUpload] = useState('none')
   const [display, setDisplayModal] = useState(false)
@@ -37,7 +38,7 @@ const PersonalInfo = ({ stepper, infoExp, changeInfo }) => {
     modelfiletutorial: '',
     modeldescription: '',
     modelname: '',
-    modeleventtype: 1,
+    modeleventtype: null,
   })
   // ** Hooks
   const {
@@ -86,6 +87,8 @@ const PersonalInfo = ({ stepper, infoExp, changeInfo }) => {
   const handleOnChangeData = (value, pop) => {
     const infoModel = JSON.parse(value)
     setData(infoModel)
+    console.log(infoModel)
+    setEnable(false)
     changeInfo(infoModel.id, pop)
     changeInfo(infoModel.default_json_Paramsconfigs, 'paramsconfigs_json')
   }
@@ -131,8 +134,8 @@ const PersonalInfo = ({ stepper, infoExp, changeInfo }) => {
           <Col className='p-0' xl='4' style={{ marginLeft: '15px' }}>
             <h6 className='mb-2'>Thông tin mô hình: {infoData.modelname}</h6>
             <CardText className='mb-25'>Loại: {infoData.modeleventtype}</CardText>
-            <CardText className='mb-25' style={{ color: 'blue', cursor: 'pointer' }} onClick={e => setDisplayModal(e)}>Mô tả</CardText>
-            <CardText className='mb-25' style={{ color: 'blue', cursor: 'pointer' }} onClick={e => setDisplayModalTur(e)}>Hướng dẫn cấu hình</CardText>
+            <CardText className='mb-25' style={{ color: 'blue', cursor: infoData.modelname !== '' ? 'pointer' : 'none' }} onClick={e => { if (infoData.modelname !== '')  { setDisplayModal(e) } }}>Mô tả</CardText>
+            <CardText className='mb-25' style={{ color: 'blue', cursor: infoData.modelname !== '' ? 'pointer' : 'none' }} onClick={e => { if (infoData.modelname !== '')  { setDisplayModalTur(e) } }}>Hướng dẫn cấu hình</CardText>
           </Col>
         </Row>
         <div className='d-flex justify-content-between'>
@@ -140,8 +143,11 @@ const PersonalInfo = ({ stepper, infoExp, changeInfo }) => {
             <ArrowLeft size={14} className='align-middle me-sm-25 me-0'></ArrowLeft>
             <span className='align-middle d-sm-inline-block d-none'>Previous</span>
           </Button>
-          <Button type='submit' color='primary' className='btn-next'>
-            <span className='align-middle d-sm-inline-block d-none'>Next</span>
+          <Button className='btn' style={{ marginRight: '15px' }} onClick={(e) => history.back()}>
+            <span className='align-middle d-sm-inline-block d-none'>Hủy</span>
+          </Button>
+          <Button type='submit' color='primary' className='btn-next' disabled={enable}>
+            <span className='align-middle d-sm-inline-block d-none' >Next</span>
             <ArrowRight size={14} className='align-middle ms-sm-25 ms-0'></ArrowRight>
           </Button>
         </div>

@@ -68,8 +68,8 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
     }
     return list
   }
-  
-  
+
+
   useEffect(() => {
     console.log(infoExp)
     console.log(dataDataset)
@@ -199,7 +199,9 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
           </Col>
         </Row>
         <div className='d-flex justify-content-end'>
-
+          <Button className='btn' style={{ marginRight: '15px' }} onClick={(e) => history.back()}>
+            <span className='align-middle d-sm-inline-block d-none'>Hủy</span>
+          </Button>
           <Button type='submit' color='primary' className='btn-next' >
             <span className='align-middle d-sm-inline-block d-none'>Next</span>
             <ArrowRight size={14} className='align-middle ms-sm-25 ms-0'></ArrowRight>

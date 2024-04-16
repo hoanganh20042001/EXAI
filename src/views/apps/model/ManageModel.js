@@ -92,7 +92,7 @@ const ManageModel = () => {
   const roleID = JSON.parse(localStorage.getItem('userData'))
   useEffect(() => {
     dispatch(getListModel({
-      pageNumber: currentPage + 1
+      page: currentPage + 1
     }))
   }, [dispatch, currentPage])
   // const status = {
@@ -136,6 +136,19 @@ const ManageModel = () => {
   }
   const handleAdd = () => {
     dispatch(addModel(infoaddData))
+    setInfoadd({
+      modelname: '',
+      modelfiletutorial: '',
+      modelfiledescription: '',
+      modeldescription: '',
+      modeleventtype: '',
+      modelcreator: '',
+      modelcreatedtime: new Date(),
+      modelsoftlibid: 1,
+      pretrainpath: '',
+      default_json_Paramsconfigs: '',
+      modeltype: 1,
+    })
     setShowAdd(false)
   }
   const handleDelet = () => {
@@ -160,6 +173,7 @@ const ManageModel = () => {
     }
   }
   const handleEdit = (data) => {
+    setEdit(false)
     setShowEdit(true)
     setInfo({
       modelid: data.modelid,
@@ -177,6 +191,12 @@ const ManageModel = () => {
     })
   }
   const handleOnChange = (data, pop) => {
+    
+    if (data.trim() === null || data.trim() === undefined || data.trim() === "") {
+      setValErrors({ ...valErrors, [pop]: 'Không được để trống' })
+    } else {
+      setValErrors({ ...valErrors, [pop]: null })
+    }
     setInfo({ ...infoData, [pop]: data })
   }
   function isDisable() {
@@ -187,14 +207,19 @@ const ManageModel = () => {
     else return false
   }
   const handleOnChangeAdd = (data, pop) => {
-    if (data === null || data === undefined || data === "") {
+    console.log(typeof (data.trim()))
+    if (data.trim() === null || data.trim() === undefined || data.trim() === "") {
       setValErrors({ ...valErrors, [pop]: 'Không được để trống' })
     } else {
       setValErrors({ ...valErrors, [pop]: null })
     }
     setInfoadd({ ...infoaddData, [pop]: data })
+    
   }
-
+// Sau khi thêm mới thành công, đặt lại giá trị của infoaddData thành rỗng
+  // const handleAddSuccess = () => {
+    
+  // }
   const columns = [
     {
       name: 'Tên mô hình',
@@ -268,7 +293,6 @@ const ManageModel = () => {
   // ** Function to handle filter
   const handleFilter = e => {
     const value = e.target.value
-    let updatedData = []
     setSearchValue(value)
 
     const status = {
@@ -280,24 +304,10 @@ const ManageModel = () => {
     }
 
     if (value.length) {
-      updatedData = dataModel.results.filter(item => {
-        const startsWith =
-          item.modelname.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.default_json_Paramsconfigs.toLowerCase().startsWith(value.toLowerCase()) ||
-          toDateString(item.modelcreatedtime).toLowerCase().startsWith(value.toLowerCase()) 
-
-        const includes =
-          item.modelname.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.default_json_Paramsconfigs.toLowerCase().startsWith(value.toLowerCase()) ||
-          toDateString(item.modelcreatedtime).toLowerCase().startsWith(value.toLowerCase()) 
-
-        if (startsWith) {
-          return startsWith
-        } else if (!startsWith && includes) {
-          return includes
-        } else return null
-      })
-      setFilteredData(updatedData)
+      dispatch(getListModel({
+        page: currentPage + 1,
+        search: value
+      }))
       setSearchValue(value)
     }
   }
@@ -381,7 +391,7 @@ const ManageModel = () => {
             paginationComponent={CustomPagination}
             paginationDefaultPage={currentPage + 1}
             selectableRowsComponent={BootstrapCheckbox}
-            data={searchValue.length ? filteredData : dataModel.results}
+            data={dataModel.results}
           />
         </div>
       </Card>
@@ -415,7 +425,7 @@ const ManageModel = () => {
           <Row tag='form' className='gy-1 pt-75' onSubmit={handleSubmit(onSubmit)}>
             <Col md={12} xs={12}>
               <Label className='form-label' for='modelname'>
-                Tên mô hình
+                Tên mô hình <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='modelname' type='text' value={infoData.modelname} onChange={(e) => handleOnChange(e.target.value, "modelname")} readOnly={edit} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.modelname}</p>
@@ -443,21 +453,21 @@ const ManageModel = () => {
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='modeleventtype'>
-                Loại sự kiện
+                Loại sự kiện  <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='modeleventtype' type='text' value={infoData.modeleventtype} onChange={(e) => handleOnChange(e.target.value, "modeleventtype")} readOnly={edit} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.modeleventtype}</p>
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='modelcreator'>
-                Người tạo
+                Người tạo <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='modelcreator' type='text' value={infoData.modelcreator} onChange={(e) => handleOnChange(e.target.value, "modelcreator")} readOnly={edit} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.modeleventtype}</p>
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='modelsoftlibid'>
-                Loại bài toán
+                Loại bài toán <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input type='select' name='modelsoftlibid' id='modelsoftlibid' value={infoData.modelsoftlibid} onChange={(e) => handleOnChange(e.target.value, "modelsoftlibid")} readOnly={edit} >
                 <option value='1'>Nhận diện khuôn mặt</option>
@@ -467,21 +477,21 @@ const ManageModel = () => {
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='pretrainpath'>
-                Pretrainpath
+                Pretrainpath <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='pretrainpath' type='text' value={infoData.pretrainpath} onChange={(e) => handleOnChange(e.target.value, "pretrainpath")} readOnly={edit} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.pretrainpath}</p>
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='default_json_Paramsconfigs'>
-                default_json_Paramsconfigs
+                default_json_Paramsconfigs  <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='default_json_Paramsconfigs' type='text' value={infoData.default_json_Paramsconfigs} onChange={(e) => handleOnChange(e.target.value, "default_json_Paramsconfigs")} readOnly={edit} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.default_json_Paramsconfigs}</p>
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='default_json_Paramsconfigs'>
-                Loại model
+                Loại model <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='modeltype' type='text' value={infoData.modeltype} onChange={(e) => handleOnChange(e.target.value, "modeltype")} readOnly={edit} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.modeltype}</p>
@@ -515,7 +525,7 @@ const ManageModel = () => {
           <Row tag='form' className='gy-1 pt-75' onSubmit={handleSubmit(onSubmit)}>
             <Col md={12} xs={12}>
               <Label className='form-label' for='modelname'>
-                Tên mô hình
+                Tên mô hình  <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='modelname' type='text' value={infoaddData.modelname} onChange={(e) => handleOnChangeAdd(e.target.value, "modelname")} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.modelname}</p>
@@ -529,7 +539,7 @@ const ManageModel = () => {
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='modelfiledescription'>
-                File mô tả
+                File mô tả 
               </Label>
               <Input id='modelfiledescription' type='text' value={infoaddData.modelfiledescription} onChange={(e) => handleOnChangeAdd(e.target.value, "modelfiledescription")} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.modelfiledescription}</p>
@@ -543,21 +553,21 @@ const ManageModel = () => {
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='modeleventtype'>
-                Loại sự kiện
+                Loại sự kiện  <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='modeleventtype' type='text' value={infoaddData.modeleventtype} onChange={(e) => handleOnChangeAdd(e.target.value, "modeleventtype")} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.modeleventtype}</p>
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='modelcreator'>
-                Người tạo
+                Người tạo  <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='modelcreator' type='text' value={infoaddData.modelcreator} onChange={(e) => handleOnChangeAdd(e.target.value, "modelcreator")} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.modeleventtype}</p>
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='modelsoftlibid'>
-                Loại bài toán
+                Loại bài toán  <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input type='select' name='modelsoftlibid' id='modelsoftlibid' value={infoaddData.modelsoftlibid} onChange={(e) => handleOnChangeAdd(e.target.value, "modelsoftlibid")}>
                 <option value='1'>Nhận diện khuôn mặt</option>
@@ -567,21 +577,21 @@ const ManageModel = () => {
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='pretrainpath'>
-                Pretrainpath
+                Pretrainpath  <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='pretrainpath' type='text' value={infoaddData.pretrainpath} onChange={(e) => handleOnChangeAdd(e.target.value, "pretrainpath")} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.pretrainpath}</p>
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='default_json_Paramsconfigs'>
-                default_json_Paramsconfigs
+                default_json_Paramsconfigs  <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='default_json_Paramsconfigs' type='text' value={infoaddData.default_json_Paramsconfigs} onChange={(e) => handleOnChangeAdd(e.target.value, "default_json_Paramsconfigs")} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.default_json_Paramsconfigs}</p>
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='default_json_Paramsconfigs'>
-                Loại model
+                Loại model  <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='modeltype' type='text' value={infoaddData.modeltype} onChange={(e) => handleOnChangeAdd(e.target.value, "modeltype")} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.modeltype}</p>

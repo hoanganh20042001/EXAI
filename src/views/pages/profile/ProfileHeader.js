@@ -117,8 +117,31 @@ const ProfileHeader = ({ data }) => {
     console.log(data)
     setInfo({ ...infoData, [pop]: data })
   }
+
   const handleUpdate = () => {
     console.log(infoData)
+    /* -----------------------------------------------*/
+    // Kiểm tra xem pop là email và data có rỗng hay không
+    if (!infoData.email.trim()) {
+      setValErrors({ ...valErrors, email: "Email không được để trống" })
+      return
+    }
+
+    // Kiểm tra xem email có đúng định dạng hay không
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    if (!emailPattern.test(infoData.email)) {
+      setValErrors({ ...valErrors, email: "Email không hợp lệ" })
+      return
+    }
+
+    // Xóa thông báo lỗi nếu email hợp lệ
+    setValErrors({ ...valErrors, email: "" })
+
+    if (!infoData.usrfullname.trim()) {
+      setValErrors({ ...valErrors, usrfullname: "Họ và tên không được để trống" })
+      return
+    }
+    /* -----------------------------------------------*/
     dispatch(updateUser({
       id: infoData.id,
       email: infoData.email,
@@ -129,7 +152,6 @@ const ProfileHeader = ({ data }) => {
       usrfaculty: infoData.usrfaculty,
     }))
     dispatch(getInfo(userData.id))
-    // dispatch(getInfo(userData.id))
     // localStorage.removeItem('userData')
     // localStorage.setItem('userData', JSON.stringify(getInfo(userData.id)))
     // window.location.reload()

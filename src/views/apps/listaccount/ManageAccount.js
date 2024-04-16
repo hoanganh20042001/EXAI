@@ -10,7 +10,7 @@ import Avatar from '@components/avatar'
 // ** Third Party Components
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
-import { ChevronDown, CheckCircle, Printer, FileText, File, Grid, Copy, Plus, Edit, Trash, Check, Clipboard, X } from 'react-feather'
+import { ChevronDown, CheckCircle, Printer, FileText, File, Grid, Copy, Plus, Edit, Trash, Check, Slash, X } from 'react-feather'
 import { useSelector, useDispatch } from 'react-redux'
 import { getListUser, updateUser, deleteUser, addUser } from '@store/action/profile'
 import { toDateStringFormat1, toDateString } from '@utils'
@@ -64,9 +64,9 @@ const ManageAccount = () => {
   const [edit, setEdit] = useState(true)
   const [infoaddData, setInfoadd] = useState({
     id: '',
-    email: '',
-    name: '',
-    password: '',
+    email: null,
+    name: null,
+    password: null,
     roleid: 3,
     usrfullname: '',
     usrdob: '',
@@ -169,7 +169,9 @@ const ManageAccount = () => {
   }
   const handleDelet = () => {
     dispatch(deleteUser(infoData.id))
+    setEdit(true)
     setShowDelete(false)
+    
   }
   const handleHistory = (data) => {
     navigate(`/managements/userHistory/${data}`)
@@ -259,7 +261,7 @@ const ManageAccount = () => {
       minWidth: '150px',
       cell: (row) => {
         return (
-          row.is_active === true ? 'Hoạt động' : 'Khóa'
+          row.is_active === true ? 'Hoạt động' : 'Xóa '
         )
       }
     },
@@ -299,7 +301,6 @@ const ManageAccount = () => {
   // ** Function to handle filter
   const handleFilter = e => {
     const value = e.target.value
-    let updatedData = []
     setSearchValue(value)
 
     const status = {
@@ -312,28 +313,11 @@ const ManageAccount = () => {
       1: { title: 'Rejected', color: 'light-danger' },
     }
     if (value.length) {
-      updatedData = dataUser.results.filter(item => {
-        const startsWith =
-          item.name.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.email.toLowerCase().startsWith(value.toLowerCase()) ||
-          toDateString(item.joined_at).toLowerCase().startsWith(value.toLowerCase()) ||
-          toDateString(item.last_login).toLowerCase().startsWith(value.toLowerCase()) ||
-          status[item.roleid].title.toLowerCase().startsWith(value.toLowerCase())
-
-        const includes =
-          item.name.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.email.toLowerCase().startsWith(value.toLowerCase()) ||
-          toDateString(item.joined_at).toLowerCase().startsWith(value.toLowerCase()) ||
-          toDateString(item.last_login).toLowerCase().startsWith(value.toLowerCase()) ||
-          status[item.roleid].title.toLowerCase().startsWith(value.toLowerCase())
-
-        if (startsWith) {
-          return startsWith
-        } else if (!startsWith && includes) {
-          return includes
-        } else return null
-      })
-      setFilteredData(updatedData)
+      dispatch(getListUser({
+        pageSize: 10,
+        pageNumber: currentPage + 1,
+        search: value.trim()
+      }))
       setSearchValue(value)
     }
   }
@@ -410,7 +394,7 @@ const ManageAccount = () => {
             paginationComponent={CustomPagination}
             paginationDefaultPage={currentPage + 1}
             selectableRowsComponent={BootstrapCheckbox}
-            data={searchValue.length ? filteredData : dataUser.results}
+            data={dataUser.results}
           />
         </div>
       </Card>
@@ -506,21 +490,21 @@ const ManageAccount = () => {
               <Label className='form-label' for='email'>
                 Email
               </Label>
-              <Input id='email' type='text' value={infoaddData.email} onChange={(e) => handleOnChangeAdd(e.target.value, "email")} />
+              <Input id='email' type='text' autoComplete={false} value={infoaddData.email} onChange={(e) => handleOnChangeAdd(e.target.value, "email")} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.email}</p>
             </Col>
             <Col md={12} xs={12}>
-              <Label className='form-label' for='name'>
+              <Label className='form-label' for='nameUser'>
                 Tên người dùng
               </Label>
-              <Input id='name' type='text' value={infoaddData.name} onChange={(e) => handleOnChangeAdd(e.target.value, "name")} />
+              <Input id='nameUser' type='text' autoComplete={false} value={infoaddData.name} onChange={(e) => handleOnChangeAdd(e.target.value, "name")} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.name}</p>
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='password'>
                 Mật khẩu
               </Label>
-              <Input id='password' type='password' value={infoaddData.password} onChange={(e) => handleOnChangeAdd(e.target.value, "password")} />
+              <Input id='pass' type='password' value={infoaddData.password} onChange={(e) => handleOnChangeAdd(e.target.value, "password")} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.password}</p>
             </Col>
             <Col md={12} xs={12}>
@@ -596,8 +580,8 @@ const ManageAccount = () => {
         <ModalHeader className='bg-transparent' toggle={() => setShowDelete(!showDelete)}></ModalHeader>
         <ModalBody className='px-sm-5 mx-50 pb-5'>
           <div className='text-center mb-2'>
-            <h1 className='mb-1'>Xóa người dùng</h1>
-            <p>Bạn có muốn xóa thông tin ngay bây giờ không?</p>
+            <h1 className='mb-1'>Xóa  người dùng</h1>
+            <p>Bạn có muốn Xóa  tài khoản ngay bây giờ không?</p>
           </div>
           <Row tag='form' className='gy-1 pt-75' onSubmit={handleSubmit(onSubmit)}>
             <Col xs={12} className='text-center mt-2 pt-50'>
@@ -605,7 +589,7 @@ const ManageAccount = () => {
                 Hủy
               </Button>
               <Button type='submit' color='danger' onClick={handleDelet}>
-                Xóa
+                Xóa 
               </Button>
             </Col>
           </Row>

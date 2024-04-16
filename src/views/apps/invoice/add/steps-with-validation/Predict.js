@@ -213,7 +213,7 @@ const Predict = ({ stepper, infoExp }) => {
               </p>
             </div>
           </div>
-          {files.length ? (
+          {files?.length ? (
             <Fragment>
               <ListGroup className='my-2'>{fileList}</ListGroup>
               {

@@ -72,6 +72,11 @@ $step-box-width: 38px;
 
         &:hover {
           background-color: transparent;
+          cursor: none !important;
+        }
+        
+        &:disabled {
+         cursor: none !important;
         }
       }
 

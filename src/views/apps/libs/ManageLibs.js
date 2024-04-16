@@ -107,13 +107,42 @@ const ManageLibs = () => {
   }
   const roleID = JSON.parse(localStorage.getItem('userData'))
   const handleUpdate = () => {
-    dispatch(updateLibs(infoData))
-    setEdit(true)
-    setShowEdit(false)
+    if (infoData.softwarelibname.trim() !== '' && infoData.softwareliburl.trim() !== '') {
+      dispatch(updateLibs(infoData))
+      setEdit(true)
+      setShowEdit(false)
+      setValErrors({
+        softwarelibname: '',
+        softwareliburl: '',
+        softwarelibdescription: '',
+      })
+    } else {
+      let temp = valErrors
+
+      if (infoData.softwarelibname.trim() === '' || infoaddData.softwarelibname === undefined) { temp = { ...temp, softwarelibname: 'Không được để trống tên thư viện' } } 
+      if (infoData.softwareliburl.trim() === '' || infoaddData.softwareliburl === undefined) { temp = { ...temp, softwareliburl: 'Không được để trống đường dẫn' } } 
+      setValErrors(temp)
+
+    }
+
   }
   const handleAdd = () => {
-    dispatch(addLibs(infoaddData))
-    setShowAdd(false)
+    if (infoaddData.softwarelibname.trim() !== '' && infoaddData.softwareliburl.trim() !== '') {
+      // console.log(infoaddData)
+      dispatch(addLibs(infoaddData))
+      setShowAdd(false)
+      setValErrors({
+        softwarelibname: '',
+        softwareliburl: '',
+        softwarelibdescription: '',
+      })
+    } else {
+      let temp = valErrors
+      if (infoaddData.softwarelibname.trim() === '' || infoaddData.softwarelibname === undefined) { temp = { ...temp, softwarelibname: 'Không được để trống tên thư viện' } } 
+      if (infoaddData.softwareliburl.trim() === '' || infoaddData.softwareliburl === undefined) { temp = { ...temp, softwareliburl: 'Không được để trống đường dẫn' } } 
+      setValErrors(temp)
+    }
+
   }
   const handleDelet = () => {
     dispatch(deleteLibs(infoData.softwarelibid))
@@ -161,6 +190,8 @@ const ManageLibs = () => {
     } else {
       setValErrors({ ...valErrors, [pop]: null })
     }
+    // console.log([pop])
+
     setInfoadd({ ...infoaddData, [pop]: data })
   }
 
@@ -189,13 +220,13 @@ const ManageLibs = () => {
       cell: (row) => {
         return (
           <div className='d-flex'>
-            
+
             {
               roleID.roleid === 3 ? <></> : <>
                 <Edit size={15} onClick={() => handleEdit(row)} style={{ cursor: 'pointer', marginLeft: '-18px' }} />
                 <Trash size={15} onClick={() => handleDelete(row)} style={{ cursor: 'pointer', marginLeft: '6px' }} />
               </>
-              
+
             }
 
           </div>
@@ -207,6 +238,7 @@ const ManageLibs = () => {
   // ** Function to handle filter
   const handleFilter = e => {
     const value = e.target.value
+    // console.log(typeof (value))
     let updatedData = []
     setSearchValue(value)
 
@@ -221,15 +253,16 @@ const ManageLibs = () => {
     if (value.length) {
       updatedData = dataLibs.results.filter(item => {
         console.log(item)
+        const value2 = value.trim()
         const startsWith =
-          item.softwarelibname.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.softwareliburl.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.softwarelibdescription.toLowerCase().startsWith(value.toLowerCase())
+          item.softwarelibname.toLowerCase().startsWith(value2.toLowerCase()) ||
+          item.softwareliburl.toLowerCase().startsWith(value2.toLowerCase()) ||
+          item.softwarelibdescription.toLowerCase().startsWith(value2.toLowerCase())
 
         const includes =
-          item.softwarelibname.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.softwareliburl.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.softwarelibdescription.toLowerCase().startsWith(value.toLowerCase())
+          item.softwarelibname.toLowerCase().startsWith(value2.toLowerCase()) ||
+          item.softwareliburl.toLowerCase().startsWith(value2.toLowerCase()) ||
+          item.softwarelibdescription.toLowerCase().startsWith(value2.toLowerCase())
 
         if (startsWith) {
           return startsWith
@@ -251,35 +284,61 @@ const ManageLibs = () => {
     // }))
   }
 
+  const [totalPages, setTotalPages] = useState(0)
+
+  useEffect(() => {
+    // Calculate total pages whenever dataLibs.count changes
+    const newTotalPages = Math.ceil(dataLibs.count / 10)
+    setTotalPages(newTotalPages)
+
+    // Reset to first page when adding new item
+    setCurrentPage(0)
+  }, [dataLibs.count])
+
+  const isFirstPage = currentPage === 0
+  const isLastPage = currentPage === totalPages - 1
+
+  const handlePreviousPage = () => {
+    if (!isFirstPage) {
+      setCurrentPage(currentPage - 1)
+    }
+  }
+
+  const handleNextPage = () => {
+    if (!isLastPage) {
+      setCurrentPage(currentPage + 1)
+    }
+  }
+
   // ** Custom Pagination
   const CustomPagination = () => (
     <ReactPaginate
-      previousLabel=''
-      nextLabel=''
-      forcePage={currentPage}
-      onPageChange={page => handlePagination(page)}
-      pageCount={dataLibs.totalPages}
-      breakLabel='...'
-      pageRangeDisplayed={2}
-      marginPagesDisplayed={2}
-      activeClassName='active'
-      pageClassName='page-item'
-      breakClassName='page-item'
-      nextLinkClassName='page-link'
-      pageLinkClassName='page-link'
-      breakLinkClassName='page-link'
-      previousLinkClassName='page-link'
-      nextClassName='page-item next-item'
-      previousClassName='page-item prev-item'
-      containerClassName='pagination react-paginate separated-pagination pagination-sm justify-content-end pe-1 mt-1'
-    />
+    previousLabel=''
+    nextLabel=''
+    forcePage={currentPage}
+    onPageChange={handlePagination}
+    pageCount={totalPages}
+    breakLabel='...'
+    pageRangeDisplayed={1}
+    marginPagesDisplayed={1}
+    activeClassName='active'
+    pageClassName='page-item'
+    breakClassName='page-item'
+    nextLinkClassName={`page-link ${isLastPage ? 'disabled' : ''}`}
+    pageLinkClassName='page-link'
+    breakLinkClassName='page-link'
+    previousLinkClassName={`page-link ${isFirstPage ? 'disabled' : ''}`}
+    nextClassName='page-item next-item'
+    previousClassName='page-item prev-item'
+    containerClassName='pagination react-paginate separated-pagination pagination-sm justify-content-end pe-1 mt-1'
+  />
   )
 
   return (
     <Fragment>
       <Card>
         <CardHeader className='flex-md-row flex-column align-md-items-center align-items-start border-bottom'>
-          <CardTitle tag='h4' style={{fontWeight:'bold', color:'#1203b1'}}>DANH SÁCH THƯ VIỆN</CardTitle>
+          <CardTitle tag='h4' style={{ fontWeight: 'bold', color: '#1203b1' }}>DANH SÁCH THƯ VIỆN</CardTitle>
           <div className='d-flex mt-md-0 mt-1'>
             {
               roleID.roleid === 3 ? <></> : <Button className='ms-2' color='primary' onClick={() => setShowAdd(true)}>
@@ -331,14 +390,15 @@ const ManageLibs = () => {
           <Row tag='form' className='gy-1 pt-75' onSubmit={handleSubmit(onSubmit)}>
             <Col md={12} xs={12}>
               <Label className='form-label' for='softwarelibname'>
-                Tên thư viện
+
+                Tên thư viện  <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='softwarelibname' type='text' value={infoData.softwarelibname} onChange={(e) => handleOnChange(e.target.value, "softwarelibname")} readOnly={edit} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.softwarelibname}</p>
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='softwareliburl'>
-                Đường dẫn
+                Đường dẫn  <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='softwareliburl' type='text' value={infoData.softwareliburl} onChange={(e) => handleOnChange(e.target.value, "softwareliburl")} readOnly={edit} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.softwareliburl}</p>
@@ -348,7 +408,6 @@ const ManageLibs = () => {
                 Mô tả
               </Label>
               <Input id='softwarelibdescription' type='text' value={infoData.softwarelibdescription} onChange={(e) => handleOnChange(e.target.value, "softwarelibdescription")} readOnly={edit} />
-              <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.softwarelibdescription}</p>
             </Col>
             <Col xs={12} className='text-center mt-2 pt-50'>
               {
@@ -380,14 +439,14 @@ const ManageLibs = () => {
           <Row tag='form' className='gy-1 pt-75' onSubmit={handleSubmit(onSubmit)}>
             <Col md={12} xs={12}>
               <Label className='form-label' for='softwarelibname'>
-                Tên thư viện
+                Tên thư viện <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='softwarelibname' type='text' value={infoaddData.softwarelibname} onChange={(e) => handleOnChangeAdd(e.target.value, "softwarelibname")} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.softwarelibname}</p>
             </Col>
             <Col md={12} xs={12}>
               <Label className='form-label' for='softwarelibdescription'>
-                Đường dẫn
+                Đường dẫn <span style={{ color: 'red' }}>*</span>
               </Label>
               <Input id='softwareliburl' type='text' value={infoaddData.softwareliburl} onChange={(e) => handleOnChangeAdd(e.target.value, "softwareliburl")} />
               <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.softwareliburl}</p>
@@ -397,7 +456,6 @@ const ManageLibs = () => {
                 Mô tả
               </Label>
               <Input id='softwarelibdescription' type='text' value={infoaddData.softwarelibdescription} onChange={(e) => handleOnChangeAdd(e.target.value, "softwarelibdescription")} />
-              <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.softwarelibdescription}</p>
             </Col>
             <Col xs={12} className='text-center mt-2 pt-50'>
               <Button type='submit' className='me-1' color='primary' onClick={handleAdd} >

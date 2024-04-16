@@ -11,12 +11,22 @@ import { X, Check } from 'react-feather'
 const getListData = (data) => {
   const url = process.env.REACT_APP_API_URL
   return async dispatch => {
-    await axios.get(`${url}/datasets/?page=${data.page}&pageSize=${data.pageSize}`).then(response => {
-      dispatch({
-        type: 'GET_DATA',
-        data: response.data
+    if (data.datasetName) {
+      await axios.get(`${url}/datasets/?page=${data.page}&pageSize=${data.pageSize}&datasetName=${data.datasetName}`).then(response => {
+        dispatch({
+          type: 'GET_DATA',
+          data: response.data
+        })
       })
-    })
+    } else {
+      await axios.get(`${url}/datasets/?page=${data.page}&pageSize=${data.pageSize}`).then(response => {
+        dispatch({
+          type: 'GET_DATA',
+          data: response.data
+        })
+      })
+    }
+   
   }
 }
 const getListDataBySoftID = (data) => {

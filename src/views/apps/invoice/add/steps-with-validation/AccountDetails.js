@@ -35,7 +35,7 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
     datasetname: '',
     datasetowner: 1,
     datasetsoftID: 1,
-    datasetsum: 1,
+    datasetsum: null,
     datasettype: 1,
   })
   const [display, setDisplayModal] = useState(false)
@@ -91,12 +91,28 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
     }))
 
   }, [dispatch, infoExp.expsoftwarelibid])
+  const [valErrors, setValErrors] = useState({
+    expname: '',
+    expsoftwarelibid: '',
+    expdatasetid: '',
+  })
   const onSubmit = () => {
+    if (infoExp.expname.trim() !== "") {
+      stepper.next()
+    } else {
+      setValErrors({ ...valErrors, expname: 'Không được để trống' })
+    }
     // if (Object.values(data).every(field => field.length > 0)) {
-    stepper.next()
 
   }
+ 
   const handleOnChange = (value, pop) => {
+    // console.log("value: ", value)
+    if (value === null || value === undefined || value === "") {
+      setValErrors({ ...valErrors, [pop]: 'Không được để trống' })
+    } else {
+      setValErrors({ ...valErrors, [pop]: null })
+    }
     changeInfo(value, pop)
   }
   const handleOnChangeData = (value, pop) => {
@@ -120,6 +136,7 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
   const handleSelect = (e) => {
     setModel(e.value)
   }
+  
   const languageOptions = [
     { value: 1, label: 'Nhận diện khuôn mặt' },
     { value: 2, label: 'Nhận diện hành vi' },
@@ -143,9 +160,10 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
             <Label className='form-label' for='city'>
               Tên bài thí nghiệm <span style={{color: 'red'}}>*</span>
             </Label><Input placeholder='Tên bài thí nghiệm' value={infoExp.expname} onChange={e => handleOnChange(e.target.value, 'expname')} />
-            {
-                infoExp.expname !== '' || infoExp.expname === null ? <></> : <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>Mật khẩu mới không được trùng với mật khẩu cũ!</p>  
-              }
+
+            <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.expname}</p>
+
+
           </Col>
 
         </Row>
@@ -166,6 +184,8 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
               isDisabled={displaySelect}
               onChange={(e) => handleOnChange(e.value, "expsoftwarelibid")}
             />
+              <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.expsoftwarelibid}</p>
+
           </Col>
         </Row>
         <Row>
@@ -185,18 +205,22 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
               isDisabled={displaySelect}
               onChange={(e) => handleOnChangeData(e.value, "expdatasetid")}
             />
+              <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.expdatasetid}</p>
+
           </Col>
         </Row>
         <Row>
           <Col className='p-0' xl='4' style={{ marginLeft: '15px' }}>
             <h6 className='mb-2'>Thông tin bộ dữ liệu: {infoModel.datasetname}</h6>
             <CardText className='mb-25'>Tổng số lượng mẫu: {infoModel.datasetsum}</CardText>
-            <CardText className='mb-25' style={{ color: 'blue', cursor: 'pointer' }} onClick={e => setDisplayModal(e)}>Mô tả</CardText>
+            <CardText className='mb-25' style={{ color: 'blue', cursor: infoModel.datasetsum !== null ? 'pointer' : 'none' }} onClick={e => { if (infoModel.datasetsum !== null)  { setDisplayModal(e) } }} >Mô tả</CardText>
           </Col>
         </Row>
         <div className='d-flex justify-content-end'>
-
-          <Button type='submit' color='primary' className='btn-next' disabled={enable}>
+         <Button className='btn' style={{ marginRight: '15px' }} onClick={(e) => history.back()}>
+            <span className='align-middle d-sm-inline-block d-none'>Hủy</span>
+          </Button>
+          <Button type='submit' color='primary' className='btn-next' disabled={enable || infoExp.expname.length === 0}>
             <span className='align-middle d-sm-inline-block d-none'>Next</span>
             <ArrowRight size={14} className='align-middle ms-sm-25 ms-0'></ArrowRight>
           </Button>

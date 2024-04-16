@@ -45,7 +45,7 @@ const Profile = () => {
   const user = JSON.parse(localStorage.getItem('userData'))
   useEffect(() => {
     dispatch(getInfo(user.id))
-  }, [])
+  }, [dispatch])
   return (
     <Fragment>
       {/* <Breadcrumbs title='Thông tin cá nhân' data={[{ title: 'Pages' }, { title: 'Thông tin cá nhân' }]} /> */}
