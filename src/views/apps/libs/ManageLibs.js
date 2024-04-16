@@ -238,6 +238,7 @@ const ManageLibs = () => {
   // ** Function to handle filter
   const handleFilter = e => {
     const value = e.target.value
+    // console.log(typeof (value))
     let updatedData = []
     setSearchValue(value)
 
@@ -252,15 +253,16 @@ const ManageLibs = () => {
     if (value.length) {
       updatedData = dataLibs.results.filter(item => {
         console.log(item)
+        const value2 = value.trim()
         const startsWith =
-          item.softwarelibname.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.softwareliburl.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.softwarelibdescription.toLowerCase().startsWith(value.toLowerCase())
+          item.softwarelibname.toLowerCase().startsWith(value2.toLowerCase()) ||
+          item.softwareliburl.toLowerCase().startsWith(value2.toLowerCase()) ||
+          item.softwarelibdescription.toLowerCase().startsWith(value2.toLowerCase())
 
         const includes =
-          item.softwarelibname.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.softwareliburl.toLowerCase().startsWith(value.toLowerCase()) ||
-          item.softwarelibdescription.toLowerCase().startsWith(value.toLowerCase())
+          item.softwarelibname.toLowerCase().startsWith(value2.toLowerCase()) ||
+          item.softwareliburl.toLowerCase().startsWith(value2.toLowerCase()) ||
+          item.softwarelibdescription.toLowerCase().startsWith(value2.toLowerCase())
 
         if (startsWith) {
           return startsWith
