@@ -158,9 +158,11 @@ const AccountDetails = ({ stepper, infoExp, changeInfo }) => {
         <Row>
           <Col md='8' className='mb-1'>
             <Label className='form-label' for='city'>
-              Tên bài thí nghiệm
+              Tên bài thí nghiệm <span style={{color: 'red'}}>*</span>
             </Label><Input placeholder='Tên bài thí nghiệm' value={infoExp.expname} onChange={e => handleOnChange(e.target.value, 'expname')} />
+
             <p style={{ fontSize: '10px', fontStyle: 'italic', color: 'red' }}>{valErrors.expname}</p>
+
 
           </Col>
 

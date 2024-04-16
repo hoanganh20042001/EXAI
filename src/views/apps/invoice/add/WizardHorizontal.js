@@ -108,7 +108,9 @@ const WizardHorizontal = () => {
   const [stepper, setStepper] = useState(null)
   const userData = JSON.parse(localStorage.getItem('userData'))
   const [infoExp, setInfoExp] = useState({
+
     expname: '',
+
     expmodelid: 1,
     expdatasetid: 1,
     expcreatorid: parseInt(userData.id),
@@ -217,10 +219,12 @@ const WizardHorizontal = () => {
   return (
     <div className='vertical-wizard'>
       <Col lg='3' className='d-flex align-items-center px-0 px-lg-1'>
+
         <CardTitle tag='h4' style={{ fontWeight: 'bold', color: '#1203b1' }}>
           TẠO BÀI THÍ NGHIỆM
         </CardTitle>
       </Col>
+
       <Wizard
         type='vertical'
         ref={ref}
